@@ -45,3 +45,42 @@ class Level(BaseModel):
 class Ladder(BaseModel):
     question: str
     levels: list[Level] = Field(min_length=1)
+
+
+class ColumnRole(StrEnum):
+    DIMENSION = "dimension"
+    MEASURE = "measure"
+
+
+class ValueFormat(StrEnum):
+    NUMBER = "number"
+    CURRENCY = "currency"
+    PERCENT = "percent"
+
+
+class Column(BaseModel):
+    key: str
+    label: str
+    role: ColumnRole
+    format: ValueFormat = ValueFormat.NUMBER
+
+
+Cell = str | int | float | bool | None
+
+
+class PanelData(BaseModel):
+    """The rows SLayer returned for one panel's query, exactly as computed."""
+
+    columns: list[Column]
+    rows: list[dict[str, Cell]]
+
+
+class ResolvedPanel(Panel):
+    data: PanelData
+
+
+class ResolvedLevel(BaseModel):
+    index: int
+    title: str
+    rationale: str
+    panels: list[ResolvedPanel]

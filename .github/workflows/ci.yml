@@ -23,6 +23,8 @@ jobs:
       - run: npm ci --prefix web
       - name: Tests
         run: uv run pytest -q
+      - name: Web tests
+        run: npm test --prefix web
       - name: Lint
         run: uv run ruff check src tests && uv run ruff format --check src tests
       - name: Type check (against baseline)

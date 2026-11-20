@@ -8,3 +8,4 @@ dist/
 .env
 living-architecture.local.yaml
 .DS_Store
+.slayer/

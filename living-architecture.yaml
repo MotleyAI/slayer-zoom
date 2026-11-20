@@ -6,7 +6,7 @@ reviewers:
   codex: false
 issue_key_pattern: "#\\d+"
 commands:
-  test: uv run pytest -q
+  test: uv run pytest -q && npm test --prefix web
   lint: uv run ruff check src tests && uv run ruff format --check src tests
   typecheck:
     python: uv run basedpyright

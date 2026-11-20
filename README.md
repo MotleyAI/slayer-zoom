@@ -19,23 +19,33 @@ writes no new SQL for any step, and every number reconciles with the step before
 | 3 Segments | + new vs returning customers, monthly trend |
 | 4 Analysis | + year over year, month over month, share of total, biggest movers |
 
-> Status: prototype, milestone M0 (repo and architecture). See the [plan](docs/plan.md).
+> Status: prototype, milestone M1 (walking skeleton with a hand-written ladder). See the [plan](docs/plan.md).
 
 ## Run it
 
 ```bash
 uv sync
-uv run uvicorn slayer_zoom.api:app --reload    # http://localhost:8000/health
+uv run uvicorn --factory slayer_zoom.api:create_app --reload   # http://localhost:8000/health
 ```
 
 ```bash
 cd web && npm install && npm run dev            # http://localhost:5173
 ```
 
+Ask "What is our revenue year to date?" and move the slider. By default the API replays the recorded trace in
+`src/slayer_zoom/traces/data/`, so it needs no database and no API key. To answer from the live SLayer Jaffle Shop
+demo database instead (built in `.slayer/` on first run), set `SLAYER_ZOOM_LIVE=1`. To re-record the trace after
+changing the ladder:
+
+```bash
+uv run python -m slayer_zoom.api.record
+```
+
 ## Checks
 
 ```bash
 uv run pytest -q
+npm test --prefix web
 uv run ruff check src tests
 la-typecheck
 la-arch-check

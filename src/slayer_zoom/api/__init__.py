@@ -1,3 +1,3 @@
-from slayer_zoom.api.app import app, create_app
+from slayer_zoom.api.app import create_app
 
-__all__ = ["app", "create_app"]
+__all__ = ["create_app"]

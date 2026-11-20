@@ -19,8 +19,22 @@ model {
         package 'slayer_zoom.core'
       }
     }
+    executor = node 'Query executor' {
+      metadata {
+        package 'slayer_zoom.executor'
+      }
+    }
+    traces = node 'Ladder store' {
+      metadata {
+        package 'slayer_zoom.traces'
+      }
+    }
 
     api -> core
+    api -> executor
+    api -> traces
+    executor -> core
+    traces -> core
   }
   typescript = system 'Web (TypeScript)' {
     app = node 'App shell' {
@@ -28,5 +42,25 @@ model {
         package 'src/app'
       }
     }
+    state = node 'Answer state' {
+      metadata {
+        package 'src/state'
+      }
+    }
+    panels = node 'Panel renderers' {
+      metadata {
+        package 'src/panels'
+      }
+    }
+    slider = node 'Granularity slider' {
+      metadata {
+        package 'src/slider'
+      }
+    }
+
+    app -> slider
+    app -> state
+    slider -> state
+    slider -> panels
   }
 }

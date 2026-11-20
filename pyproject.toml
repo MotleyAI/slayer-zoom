@@ -8,6 +8,7 @@ requires-python = ">=3.12"
 authors = [{ name = "MotleyAI" }]
 dependencies = [
     "fastapi>=0.115",
+    "motley-slayer>=1.9.1",
     "pydantic>=2.9",
     "uvicorn>=0.32",
 ]

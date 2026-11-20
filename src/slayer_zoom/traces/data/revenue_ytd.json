@@ -1,0 +1,1250 @@
+{
+  "ladder": {
+    "question": "What is our revenue year to date?",
+    "levels": [
+      {
+        "index": 0,
+        "title": "Number",
+        "panels": [
+          {
+            "id": "total",
+            "kind": "kpi",
+            "title": "Revenue year to date",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          }
+        ],
+        "rationale": "The answer in one number."
+      },
+      {
+        "index": 1,
+        "title": "Split",
+        "panels": [
+          {
+            "id": "total",
+            "kind": "kpi",
+            "title": "Revenue year to date",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_store",
+            "kind": "bar",
+            "title": "By store",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [
+                "stores.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "total"
+          }
+        ],
+        "rationale": "Where the revenue comes from."
+      },
+      {
+        "index": 2,
+        "title": "Mix",
+        "panels": [
+          {
+            "id": "total",
+            "kind": "kpi",
+            "title": "Revenue year to date",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_store",
+            "kind": "bar",
+            "title": "By store",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [
+                "stores.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "total"
+          },
+          {
+            "id": "store_mix",
+            "kind": "table",
+            "title": "Units sold by store and product type",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "orders.stores.name",
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_store"
+          },
+          {
+            "id": "top_products",
+            "kind": "bar",
+            "title": "Top products by units sold",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "products.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": 5,
+              "order": [
+                {
+                  "column": "units",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "parent": null
+          }
+        ],
+        "rationale": "What each store sells. The demo model has no revenue per product line, so this uses units."
+      },
+      {
+        "index": 3,
+        "title": "Trend and drivers",
+        "panels": [
+          {
+            "id": "total",
+            "kind": "kpi",
+            "title": "Revenue year to date",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_store",
+            "kind": "bar",
+            "title": "By store",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [
+                "stores.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "total"
+          },
+          {
+            "id": "store_mix",
+            "kind": "table",
+            "title": "Units sold by store and product type",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "orders.stores.name",
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_store"
+          },
+          {
+            "id": "top_products",
+            "kind": "bar",
+            "title": "Top products by units sold",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "products.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": 5,
+              "order": [
+                {
+                  "column": "units",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "parent": null
+          },
+          {
+            "id": "monthly",
+            "kind": "line",
+            "title": "Month by month",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                },
+                {
+                  "formula": "cumsum(total_revenue)",
+                  "name": "running_total",
+                  "label": "Running total",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "month",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "total"
+          },
+          {
+            "id": "store_drivers",
+            "kind": "table",
+            "title": "Share, orders, customers and order value by store",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                },
+                {
+                  "formula": "total_revenue / sum(order_total, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of revenue",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                },
+                {
+                  "formula": "order_count",
+                  "name": "orders",
+                  "label": "Orders"
+                },
+                {
+                  "formula": "unique_customers",
+                  "name": "customers",
+                  "label": "Customers"
+                },
+                {
+                  "formula": "avg_order_value",
+                  "name": "aov",
+                  "label": "Average order",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 2
+                  }
+                }
+              ],
+              "dimensions": [
+                "stores.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_store"
+          }
+        ],
+        "rationale": "How the year built up, and what drives each store's revenue."
+      },
+      {
+        "index": 4,
+        "title": "Analysis",
+        "panels": [
+          {
+            "id": "total",
+            "kind": "kpi",
+            "title": "Revenue year to date",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_store",
+            "kind": "bar",
+            "title": "By store",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [
+                "stores.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "total"
+          },
+          {
+            "id": "store_mix",
+            "kind": "table",
+            "title": "Units sold by store and product type",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "orders.stores.name",
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_store"
+          },
+          {
+            "id": "top_products",
+            "kind": "bar",
+            "title": "Top products by units sold",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "products.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": 5,
+              "order": [
+                {
+                  "column": "units",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "parent": null
+          },
+          {
+            "id": "monthly",
+            "kind": "line",
+            "title": "Month by month",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                },
+                {
+                  "formula": "cumsum(total_revenue)",
+                  "name": "running_total",
+                  "label": "Running total",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "month",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "total"
+          },
+          {
+            "id": "store_drivers",
+            "kind": "table",
+            "title": "Share, orders, customers and order value by store",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                },
+                {
+                  "formula": "total_revenue / sum(order_total, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of revenue",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                },
+                {
+                  "formula": "order_count",
+                  "name": "orders",
+                  "label": "Orders"
+                },
+                {
+                  "formula": "unique_customers",
+                  "name": "customers",
+                  "label": "Customers"
+                },
+                {
+                  "formula": "avg_order_value",
+                  "name": "aov",
+                  "label": "Average order",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 2
+                  }
+                }
+              ],
+              "dimensions": [
+                "stores.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_store"
+          },
+          {
+            "id": "monthly_change",
+            "kind": "delta",
+            "title": "Complete months against last year and the month before",
+            "query": {
+              "source_model": "orders",
+              "measures": [
+                {
+                  "formula": "total_revenue",
+                  "name": "revenue",
+                  "label": "Revenue",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                },
+                {
+                  "formula": "time_shift(total_revenue, -1, 'year')",
+                  "name": "last_year",
+                  "label": "Same month last year",
+                  "format": {
+                    "type": "currency",
+                    "symbol": "$",
+                    "precision": 0
+                  }
+                },
+                {
+                  "formula": "total_revenue / time_shift(total_revenue, -1, 'year') - 1",
+                  "name": "yoy",
+                  "label": "vs last year",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                },
+                {
+                  "formula": "change_pct(total_revenue)",
+                  "name": "mom",
+                  "label": "vs previous month",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "ordered_at",
+                  "granularity": "month",
+                  "date_range": [
+                    "this year",
+                    "last month"
+                  ]
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "monthly"
+          }
+        ],
+        "rationale": "How each complete month compares with last year and with the month before."
+      }
+    ]
+  },
+  "results": {
+    "a544080e23ed8be2": {
+      "columns": [
+        {
+          "key": "orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.revenue",
+          "label": "Revenue",
+          "role": "measure",
+          "format": "currency"
+        }
+      ],
+      "rows": [
+        {
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 2058332.71
+        }
+      ]
+    },
+    "7f6e7b6b980fc80f": {
+      "columns": [
+        {
+          "key": "orders.stores.name",
+          "label": "Store",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.revenue",
+          "label": "Revenue",
+          "role": "measure",
+          "format": "currency"
+        }
+      ],
+      "rows": [
+        {
+          "orders.stores.name": "Brooklyn",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 1088403.56
+        },
+        {
+          "orders.stores.name": "Chicago",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 148100.09
+        },
+        {
+          "orders.stores.name": "Philadelphia",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 708164.66
+        },
+        {
+          "orders.stores.name": "San Francisco",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 113664.4
+        }
+      ]
+    },
+    "07e783f79ff62719": {
+      "columns": [
+        {
+          "key": "items.orders.stores.name",
+          "label": "Store",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.orders.stores.name": "Brooklyn",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 114987
+        },
+        {
+          "items.orders.stores.name": "Brooklyn",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 33530
+        },
+        {
+          "items.orders.stores.name": "Chicago",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 15358
+        },
+        {
+          "items.orders.stores.name": "Chicago",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 4460
+        },
+        {
+          "items.orders.stores.name": "Philadelphia",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 71398
+        },
+        {
+          "items.orders.stores.name": "Philadelphia",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 22392
+        },
+        {
+          "items.orders.stores.name": "San Francisco",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12050
+        },
+        {
+          "items.orders.stores.name": "San Francisco",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 3204
+        }
+      ]
+    },
+    "1fc65729e7884b9a": {
+      "columns": [
+        {
+          "key": "items.products.name",
+          "label": "Product",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.products.name": "adele-ade",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 43019
+        },
+        {
+          "items.products.name": "tangaroo",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42927
+        },
+        {
+          "items.products.name": "for richer or pourover ",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42904
+        },
+        {
+          "items.products.name": "chai and mighty",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42699
+        },
+        {
+          "items.products.name": "vanilla ice",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42244
+        }
+      ]
+    },
+    "4f968edcf851b62b": {
+      "columns": [
+        {
+          "key": "orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.revenue",
+          "label": "Revenue",
+          "role": "measure",
+          "format": "currency"
+        },
+        {
+          "key": "orders.running_total",
+          "label": "Running total",
+          "role": "measure",
+          "format": "currency"
+        }
+      ],
+      "rows": [
+        {
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 164573.88,
+          "orders.running_total": 164573.88
+        },
+        {
+          "orders.ordered_at": "2026-02-01T00:00:00",
+          "orders.revenue": 157998.93,
+          "orders.running_total": 322572.81
+        },
+        {
+          "orders.ordered_at": "2026-03-01T00:00:00",
+          "orders.revenue": 181894.63,
+          "orders.running_total": 504467.44
+        },
+        {
+          "orders.ordered_at": "2026-04-01T00:00:00",
+          "orders.revenue": 179181.67,
+          "orders.running_total": 683649.11
+        },
+        {
+          "orders.ordered_at": "2026-05-01T00:00:00",
+          "orders.revenue": 188426.37,
+          "orders.running_total": 872075.48
+        },
+        {
+          "orders.ordered_at": "2026-06-01T00:00:00",
+          "orders.revenue": 183999.9,
+          "orders.running_total": 1056075.38
+        },
+        {
+          "orders.ordered_at": "2026-07-01T00:00:00",
+          "orders.revenue": 199124.1,
+          "orders.running_total": 1255199.48
+        },
+        {
+          "orders.ordered_at": "2026-08-01T00:00:00",
+          "orders.revenue": 245523.36,
+          "orders.running_total": 1500722.8399999999
+        },
+        {
+          "orders.ordered_at": "2026-09-01T00:00:00",
+          "orders.revenue": 203259.51,
+          "orders.running_total": 1703982.3499999999
+        },
+        {
+          "orders.ordered_at": "2026-10-01T00:00:00",
+          "orders.revenue": 211195.92,
+          "orders.running_total": 1915178.2699999998
+        },
+        {
+          "orders.ordered_at": "2026-11-01T00:00:00",
+          "orders.revenue": 143154.44,
+          "orders.running_total": 2058332.7099999997
+        }
+      ]
+    },
+    "29f9ca514c1cc1df": {
+      "columns": [
+        {
+          "key": "orders.stores.name",
+          "label": "Store",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.revenue",
+          "label": "Revenue",
+          "role": "measure",
+          "format": "currency"
+        },
+        {
+          "key": "orders.share",
+          "label": "Share of revenue",
+          "role": "measure",
+          "format": "percent"
+        },
+        {
+          "key": "orders.orders",
+          "label": "Orders",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "orders.customers",
+          "label": "Customers",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "orders.aov",
+          "label": "Average order",
+          "role": "measure",
+          "format": "currency"
+        }
+      ],
+      "rows": [
+        {
+          "orders.stores.name": "Brooklyn",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 1088403.56,
+          "orders.share": 0.5287792176222085,
+          "orders.orders": 102137,
+          "orders.customers": 701,
+          "orders.aov": 10.65631024995839
+        },
+        {
+          "orders.stores.name": "Chicago",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 148100.09,
+          "orders.share": 0.07195148251810078,
+          "orders.orders": 13325,
+          "orders.customers": 344,
+          "orders.aov": 11.114453283302064
+        },
+        {
+          "orders.stores.name": "Philadelphia",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 708164.66,
+          "orders.share": 0.3440477122865137,
+          "orders.orders": 61320,
+          "orders.customers": 450,
+          "orders.aov": 11.548673515981736
+        },
+        {
+          "orders.stores.name": "San Francisco",
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 113664.4,
+          "orders.share": 0.055221587573177126,
+          "orders.orders": 10550,
+          "orders.customers": 298,
+          "orders.aov": 10.773876777251184
+        }
+      ]
+    },
+    "1852bf9efe2cc7a1": {
+      "columns": [
+        {
+          "key": "orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "orders.revenue",
+          "label": "Revenue",
+          "role": "measure",
+          "format": "currency"
+        },
+        {
+          "key": "orders.last_year",
+          "label": "Same month last year",
+          "role": "measure",
+          "format": "currency"
+        },
+        {
+          "key": "orders.yoy",
+          "label": "vs last year",
+          "role": "measure",
+          "format": "percent"
+        },
+        {
+          "key": "orders.mom",
+          "label": "vs previous month",
+          "role": "measure",
+          "format": "percent"
+        }
+      ],
+      "rows": [
+        {
+          "orders.ordered_at": "2026-01-01T00:00:00",
+          "orders.revenue": 164573.88,
+          "orders.last_year": 25185.42,
+          "orders.yoy": 5.534490193135553,
+          "orders.mom": 0.13727946251077763
+        },
+        {
+          "orders.ordered_at": "2026-02-01T00:00:00",
+          "orders.revenue": 157998.93,
+          "orders.last_year": 31398.95,
+          "orders.yoy": 4.031981324216256,
+          "orders.mom": -0.03995135801622962
+        },
+        {
+          "orders.ordered_at": "2026-03-01T00:00:00",
+          "orders.revenue": 181894.63,
+          "orders.last_year": 41868.7,
+          "orders.yoy": 3.3444059643600115,
+          "orders.mom": 0.15123963181269653
+        },
+        {
+          "orders.ordered_at": "2026-04-01T00:00:00",
+          "orders.revenue": 179181.67,
+          "orders.last_year": 45206.71,
+          "orders.yoy": 2.963607836093359,
+          "orders.mom": -0.014915008760841328
+        },
+        {
+          "orders.ordered_at": "2026-05-01T00:00:00",
+          "orders.revenue": 188426.37,
+          "orders.last_year": 51253.32,
+          "orders.yoy": 2.676373940263772,
+          "orders.mom": 0.051594005123403425
+        },
+        {
+          "orders.ordered_at": "2026-06-01T00:00:00",
+          "orders.revenue": 183999.9,
+          "orders.last_year": 93448.56,
+          "orders.yoy": 0.9689966330139277,
+          "orders.mom": -0.023491775593830106
+        },
+        {
+          "orders.ordered_at": "2026-07-01T00:00:00",
+          "orders.revenue": 199124.1,
+          "orders.last_year": 94803.88,
+          "orders.yoy": 1.1003792249853066,
+          "orders.mom": 0.08219678380259995
+        },
+        {
+          "orders.ordered_at": "2026-08-01T00:00:00",
+          "orders.revenue": 245523.36,
+          "orders.last_year": 107782.19,
+          "orders.yoy": 1.2779585384190093,
+          "orders.mom": 0.23301679706273615
+        },
+        {
+          "orders.ordered_at": "2026-09-01T00:00:00",
+          "orders.revenue": 203259.51,
+          "orders.last_year": 98104.22,
+          "orders.yoy": 1.071873258866948,
+          "orders.mom": -0.17213779576819077
+        },
+        {
+          "orders.ordered_at": "2026-10-01T00:00:00",
+          "orders.revenue": 211195.92,
+          "orders.last_year": 101982.52,
+          "orders.yoy": 1.0709031312424915,
+          "orders.mom": 0.039045700739906354
+        }
+      ]
+    }
+  }
+}
