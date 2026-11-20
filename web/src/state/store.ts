@@ -7,7 +7,11 @@ export type Status = "idle" | "loading" | "streaming" | "done" | "error";
 export interface AnswerState {
   question: string;
   status: Status;
-  expectedLevels: number;
+  /** How many levels the answer will have, or null while an agent is still deciding. */
+  expectedLevels: number | null;
+  /** The agent's progress notes, oldest first. */
+  notes: string[];
+  summary: string;
   levels: ResolvedLevel[];
   position: number;
   error: string | null;
@@ -26,6 +30,8 @@ const INITIAL: AnswerState = {
   question: "",
   status: "idle",
   expectedLevels: 0,
+  notes: [],
+  summary: "",
   levels: [],
   position: 0,
   error: null,
@@ -41,11 +47,13 @@ export function createAnswerStore(fetchImpl: typeof fetch = (...args) => fetch(.
 
   const handle = (event: string, data: unknown) => {
     if (event === "ladder") {
-      set({ status: "streaming", expectedLevels: (data as { levels: number }).levels });
+      set({ status: "streaming", expectedLevels: (data as { levels: number | null }).levels });
+    } else if (event === "note") {
+      set({ notes: [...state.notes, (data as { text: string }).text] });
     } else if (event === "level") {
       set({ levels: [...state.levels, data as ResolvedLevel] });
     } else if (event === "done") {
-      set({ status: "done" });
+      set({ status: "done", summary: (data as { summary?: string }).summary ?? "" });
     } else if (event === "error") {
       set({ status: "error", error: (data as { message: string }).message });
     }

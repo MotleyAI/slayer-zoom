@@ -1,0 +1,1598 @@
+{
+  "ladder": {
+    "question": "What do our customers buy?",
+    "levels": [
+      {
+        "index": 0,
+        "title": "Number",
+        "panels": [
+          {
+            "id": "units_total",
+            "kind": "kpi",
+            "title": "Units sold year to date",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          }
+        ],
+        "rationale": "How many items customers have bought this year, counted in units because there is no revenue per product."
+      },
+      {
+        "index": 1,
+        "title": "Product line",
+        "panels": [
+          {
+            "id": "units_total",
+            "kind": "kpi",
+            "title": "Units sold year to date",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_type",
+            "kind": "table",
+            "title": "Units and share by product line",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "units_total"
+          }
+        ],
+        "rationale": "The split between drinks and jaffles, with each line's share of units."
+      },
+      {
+        "index": 2,
+        "title": "Products",
+        "panels": [
+          {
+            "id": "units_total",
+            "kind": "kpi",
+            "title": "Units sold year to date",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_type",
+            "kind": "table",
+            "title": "Units and share by product line",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "units_total"
+          },
+          {
+            "id": "by_product",
+            "kind": "table",
+            "title": "Units and share by product",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type",
+                "products.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null,
+              "order": [
+                {
+                  "column": "units",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "parent": "by_type"
+          }
+        ],
+        "rationale": "Which menu items customers buy within each product line."
+      },
+      {
+        "index": 3,
+        "title": "Stores and trend",
+        "panels": [
+          {
+            "id": "units_total",
+            "kind": "kpi",
+            "title": "Units sold year to date",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_type",
+            "kind": "table",
+            "title": "Units and share by product line",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "units_total"
+          },
+          {
+            "id": "by_product",
+            "kind": "table",
+            "title": "Units and share by product",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type",
+                "products.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null,
+              "order": [
+                {
+                  "column": "units",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "parent": "by_type"
+          },
+          {
+            "id": "store_mix",
+            "kind": "table",
+            "title": "Units by store and product line, with units per order containing that line (Chicago and San Francisco opened in July)",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / order_id:count_distinct",
+                  "name": "per_order",
+                  "label": "Units per order"
+                }
+              ],
+              "dimensions": [
+                "orders.stores.name",
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_type"
+          },
+          {
+            "id": "monthly_mix",
+            "kind": "line",
+            "title": "Units by product line, month by month (current month partial)",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "month",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_type"
+          }
+        ],
+        "rationale": "How the drink and jaffle mix differs by store, how many of each a typical order holds, and how the mix moved month by month."
+      },
+      {
+        "index": 4,
+        "title": "Year on year",
+        "panels": [
+          {
+            "id": "units_total",
+            "kind": "kpi",
+            "title": "Units sold year to date",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": null
+          },
+          {
+            "id": "by_type",
+            "kind": "table",
+            "title": "Units and share by product line",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "units_total"
+          },
+          {
+            "id": "by_product",
+            "kind": "table",
+            "title": "Units and share by product",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / sum(id:count, partition_by=[])",
+                  "name": "share",
+                  "label": "Share of units",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type",
+                "products.name"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null,
+              "order": [
+                {
+                  "column": "units",
+                  "direction": "desc"
+                }
+              ]
+            },
+            "parent": "by_type"
+          },
+          {
+            "id": "store_mix",
+            "kind": "table",
+            "title": "Units by store and product line, with units per order containing that line (Chicago and San Francisco opened in July)",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "units_sold / order_id:count_distinct",
+                  "name": "per_order",
+                  "label": "Units per order"
+                }
+              ],
+              "dimensions": [
+                "orders.stores.name",
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "year",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_type"
+          },
+          {
+            "id": "monthly_mix",
+            "kind": "line",
+            "title": "Units by product line, month by month (current month partial)",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "month",
+                  "date_range": "this year"
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "by_type"
+          },
+          {
+            "id": "mix_yoy",
+            "kind": "delta",
+            "title": "Complete months against the same month last year, by product line (includes new stores)",
+            "query": {
+              "source_model": "items",
+              "measures": [
+                {
+                  "formula": "units_sold",
+                  "name": "units",
+                  "label": "Units sold"
+                },
+                {
+                  "formula": "time_shift(units_sold, -1, 'year')",
+                  "name": "last_year",
+                  "label": "Same month last year"
+                },
+                {
+                  "formula": "units_sold / time_shift(units_sold, -1, 'year') - 1",
+                  "name": "yoy",
+                  "label": "vs last year",
+                  "format": {
+                    "type": "percent",
+                    "precision": 1
+                  }
+                }
+              ],
+              "dimensions": [
+                "products.type"
+              ],
+              "time_dimensions": [
+                {
+                  "dimension": "orders.ordered_at",
+                  "granularity": "month",
+                  "date_range": [
+                    "this year",
+                    "last month"
+                  ]
+                }
+              ],
+              "filters": [],
+              "limit": null
+            },
+            "parent": "monthly_mix"
+          }
+        ],
+        "rationale": "How units of each product line in each complete month compare with the same month last year, a comparison that mixes new stores with like-for-like growth."
+      }
+    ]
+  },
+  "results": {
+    "8a14dc4dc9f9c8a3": {
+      "columns": [
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units_sold",
+          "label": "Item ID",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units_sold": 212122
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units_sold": 61939
+        }
+      ]
+    },
+    "1faa230249e40d26": {
+      "columns": [
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 274061
+        }
+      ]
+    },
+    "7cbeb643a2942c94": {
+      "columns": [
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "items.share",
+          "label": "Share of units",
+          "role": "measure",
+          "format": "percent"
+        }
+      ],
+      "rows": [
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 212122,
+          "items.share": 0.7739955703292333
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 61939,
+          "items.share": 0.22600442967076673
+        }
+      ]
+    },
+    "6d3c679320b8be70": {
+      "columns": [
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.products.name",
+          "label": "Product",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "items.share",
+          "label": "Share of units",
+          "role": "measure",
+          "format": "percent"
+        }
+      ],
+      "rows": [
+        {
+          "items.products.type": "beverage",
+          "items.products.name": "for richer or pourover ",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42578,
+          "items.share": 0.15535957323369615
+        },
+        {
+          "items.products.type": "beverage",
+          "items.products.name": "chai and mighty",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42451,
+          "items.share": 0.15489617274986225
+        },
+        {
+          "items.products.type": "beverage",
+          "items.products.name": "adele-ade",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42439,
+          "items.share": 0.15485238687737402
+        },
+        {
+          "items.products.type": "beverage",
+          "items.products.name": "tangaroo",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42342,
+          "items.share": 0.15449845107476073
+        },
+        {
+          "items.products.type": "beverage",
+          "items.products.name": "vanilla ice",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 42312,
+          "items.share": 0.15438898639354012
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.products.name": "nutellaphone who dis?",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12518,
+          "items.share": 0.04567596265065077
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.products.name": "doctor stew",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12499,
+          "items.share": 0.04560663501921105
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.products.name": "flame impala",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12404,
+          "items.share": 0.04525999686201247
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.products.name": "mel-bun",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12260,
+          "items.share": 0.04473456639215357
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.products.name": "the krautback",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12258,
+          "items.share": 0.044727268746738866
+        }
+      ]
+    },
+    "a9556419a6559bf4": {
+      "columns": [
+        {
+          "key": "items.orders.stores.name",
+          "label": "Store",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "items.per_order",
+          "label": "Units per order",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.orders.stores.name": "Brooklyn",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 112763,
+          "items.per_order": 1.1657259231691683
+        },
+        {
+          "items.orders.stores.name": "Brooklyn",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 33409,
+          "items.per_order": 1.409840908131831
+        },
+        {
+          "items.orders.stores.name": "Chicago",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 15824,
+          "items.per_order": 1.1692898839872903
+        },
+        {
+          "items.orders.stores.name": "Chicago",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 4062,
+          "items.per_order": 1.4950312845049687
+        },
+        {
+          "items.orders.stores.name": "Philadelphia",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 71050,
+          "items.per_order": 1.1622390891840608
+        },
+        {
+          "items.orders.stores.name": "Philadelphia",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 21344,
+          "items.per_order": 1.3799702592616538
+        },
+        {
+          "items.orders.stores.name": "San Francisco",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12485,
+          "items.per_order": 1.1767200754005656
+        },
+        {
+          "items.orders.stores.name": "San Francisco",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 3124,
+          "items.per_order": 1.569060773480663
+        }
+      ]
+    },
+    "4df342e80456f656": {
+      "columns": [
+        {
+          "key": "items.orders.stores.name",
+          "label": "Store",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "items.per_order",
+          "label": "Units per order",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.orders.stores.name": "Brooklyn",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 112763,
+          "items.per_order": 1.1657259231691683
+        },
+        {
+          "items.orders.stores.name": "Brooklyn",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 33409,
+          "items.per_order": 1.409840908131831
+        },
+        {
+          "items.orders.stores.name": "Chicago",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 15824,
+          "items.per_order": 1.1692898839872903
+        },
+        {
+          "items.orders.stores.name": "Chicago",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 4062,
+          "items.per_order": 1.4950312845049687
+        },
+        {
+          "items.orders.stores.name": "Philadelphia",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 71050,
+          "items.per_order": 1.1622390891840608
+        },
+        {
+          "items.orders.stores.name": "Philadelphia",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 21344,
+          "items.per_order": 1.3799702592616538
+        },
+        {
+          "items.orders.stores.name": "San Francisco",
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 12485,
+          "items.per_order": 1.1767200754005656
+        },
+        {
+          "items.orders.stores.name": "San Francisco",
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 3124,
+          "items.per_order": 1.569060773480663
+        }
+      ]
+    },
+    "9413fa0fd299c3c0": {
+      "columns": [
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        }
+      ],
+      "rows": [
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 16538
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-02-01T00:00:00",
+          "items.units": 16065
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-03-01T00:00:00",
+          "items.units": 18806
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-04-01T00:00:00",
+          "items.units": 18122
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-05-01T00:00:00",
+          "items.units": 18929
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-06-01T00:00:00",
+          "items.units": 18579
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-07-01T00:00:00",
+          "items.units": 19824
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-08-01T00:00:00",
+          "items.units": 25136
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-09-01T00:00:00",
+          "items.units": 21589
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-10-01T00:00:00",
+          "items.units": 22737
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-11-01T00:00:00",
+          "items.units": 15797
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 5188
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-02-01T00:00:00",
+          "items.units": 4784
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-03-01T00:00:00",
+          "items.units": 5697
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-04-01T00:00:00",
+          "items.units": 5771
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-05-01T00:00:00",
+          "items.units": 5851
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-06-01T00:00:00",
+          "items.units": 5651
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-07-01T00:00:00",
+          "items.units": 6345
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-08-01T00:00:00",
+          "items.units": 7268
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-09-01T00:00:00",
+          "items.units": 5540
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-10-01T00:00:00",
+          "items.units": 5858
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-11-01T00:00:00",
+          "items.units": 3986
+        }
+      ]
+    },
+    "65071b70108db9ee": {
+      "columns": [
+        {
+          "key": "items.products.type",
+          "label": "Category",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.orders.ordered_at",
+          "label": "Order Date",
+          "role": "dimension",
+          "format": "number"
+        },
+        {
+          "key": "items.units",
+          "label": "Units sold",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "items.last_year",
+          "label": "Same month last year",
+          "role": "measure",
+          "format": "number"
+        },
+        {
+          "key": "items.yoy",
+          "label": "vs last year",
+          "role": "measure",
+          "format": "percent"
+        }
+      ],
+      "rows": [
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 16538,
+          "items.last_year": 2575,
+          "items.yoy": 5.42252427184466
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-02-01T00:00:00",
+          "items.units": 16065,
+          "items.last_year": 3032,
+          "items.yoy": 4.298482849604222
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-03-01T00:00:00",
+          "items.units": 18806,
+          "items.last_year": 4281,
+          "items.yoy": 3.3928988554076147
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-04-01T00:00:00",
+          "items.units": 18122,
+          "items.last_year": 4653,
+          "items.yoy": 2.8946915968192566
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-05-01T00:00:00",
+          "items.units": 18929,
+          "items.last_year": 5085,
+          "items.yoy": 2.7225172074729596
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-06-01T00:00:00",
+          "items.units": 18579,
+          "items.last_year": 9373,
+          "items.yoy": 0.9821828656780114
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-07-01T00:00:00",
+          "items.units": 19824,
+          "items.last_year": 9705,
+          "items.yoy": 1.042658423493045
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-08-01T00:00:00",
+          "items.units": 25136,
+          "items.last_year": 10809,
+          "items.yoy": 1.3254695161439543
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-09-01T00:00:00",
+          "items.units": 21589,
+          "items.last_year": 10505,
+          "items.yoy": 1.0551166111375534
+        },
+        {
+          "items.products.type": "beverage",
+          "items.orders.ordered_at": "2026-10-01T00:00:00",
+          "items.units": 22737,
+          "items.last_year": 10946,
+          "items.yoy": 1.0771971496437054
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-01-01T00:00:00",
+          "items.units": 5188,
+          "items.last_year": 808,
+          "items.yoy": 5.420792079207921
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-02-01T00:00:00",
+          "items.units": 4784,
+          "items.last_year": 939,
+          "items.yoy": 4.094781682641107
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-03-01T00:00:00",
+          "items.units": 5697,
+          "items.last_year": 1242,
+          "items.yoy": 3.586956521739131
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-04-01T00:00:00",
+          "items.units": 5771,
+          "items.last_year": 1474,
+          "items.yoy": 2.9151967435549526
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-05-01T00:00:00",
+          "items.units": 5851,
+          "items.last_year": 1679,
+          "items.yoy": 2.4848123883263846
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-06-01T00:00:00",
+          "items.units": 5651,
+          "items.last_year": 2722,
+          "items.yoy": 1.0760470242468774
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-07-01T00:00:00",
+          "items.units": 6345,
+          "items.last_year": 2899,
+          "items.yoy": 1.1886857537081754
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-08-01T00:00:00",
+          "items.units": 7268,
+          "items.last_year": 3239,
+          "items.yoy": 1.2439024390243905
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-09-01T00:00:00",
+          "items.units": 5540,
+          "items.last_year": 2719,
+          "items.yoy": 1.0375137918352335
+        },
+        {
+          "items.products.type": "jaffle",
+          "items.orders.ordered_at": "2026-10-01T00:00:00",
+          "items.units": 5858,
+          "items.last_year": 2914,
+          "items.yoy": 1.0102951269732325
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "kind": "note",
+      "text": "I'm reading the items and products models to see how purchases can be split.",
+      "tool": null,
+      "input": null,
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Reading the items model",
+      "tool": "describe_model",
+      "input": {
+        "name": "items"
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Profiling products.type in items",
+      "tool": "profile_dimension",
+      "input": {
+        "model": "items",
+        "dimension": "products.type"
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Profiling products.name in items",
+      "tool": "profile_dimension",
+      "input": {
+        "model": "items",
+        "dimension": "products.name"
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "note",
+      "text": "I'm checking the date range of orders and how stores split the units.",
+      "tool": null,
+      "input": null,
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Profiling ordered_at in orders",
+      "tool": "profile_dimension",
+      "input": {
+        "model": "orders",
+        "dimension": "ordered_at"
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Profiling orders.stores.name in items",
+      "tool": "profile_dimension",
+      "input": {
+        "model": "items",
+        "dimension": "orders.stores.name"
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "note",
+      "text": "I'm checking the year-to-date product mix before I build the ladder.",
+      "tool": null,
+      "input": null,
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Checking a query on the data",
+      "tool": "probe_query",
+      "input": {
+        "source_model": "items",
+        "measures": [
+          "units_sold"
+        ],
+        "dimensions": [
+          "products.type"
+        ],
+        "time_dimensions": [
+          {
+            "dimension": "orders.ordered_at",
+            "granularity": "year",
+            "date_range": "this year"
+          }
+        ],
+        "filters": [],
+        "limit": 20
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Building level 1: Number",
+      "tool": "submit_level",
+      "input": {
+        "title": "Number",
+        "panels": 1
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "level",
+      "text": "Number",
+      "tool": null,
+      "input": null,
+      "level": 0,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Building level 2: Product line",
+      "tool": "submit_level",
+      "input": {
+        "title": "Product line",
+        "panels": 2
+      },
+      "level": null,
+      "error": "{\"errors\": [\"panel by_type: UnknownReferenceError: Cannot resolve reference 'units_sold'.\\n  scope: ModelScope: model 'items'\\n  suggestion: 'units_sold' is a saved measure on 'items', not a column, so it takes no aggregation. saved measures may be referenced only in a measure formula or a computed dimension expression; reference it there as 'units_sold'.\"]}"
+    },
+    {
+      "kind": "tool",
+      "text": "Building level 2: Product line",
+      "tool": "submit_level",
+      "input": {
+        "title": "Product line",
+        "panels": 2
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "level",
+      "text": "Product line",
+      "tool": null,
+      "input": null,
+      "level": 1,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Building level 3: Products",
+      "tool": "submit_level",
+      "input": {
+        "title": "Products",
+        "panels": 3
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "level",
+      "text": "Products",
+      "tool": null,
+      "input": null,
+      "level": 2,
+      "error": null
+    },
+    {
+      "kind": "note",
+      "text": "I'm checking whether units per order can be computed from items.",
+      "tool": null,
+      "input": null,
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Checking a query on the data",
+      "tool": "probe_query",
+      "input": {
+        "source_model": "items",
+        "measures": [
+          {
+            "formula": "units_sold",
+            "name": "units",
+            "label": "Units sold"
+          },
+          {
+            "formula": "units_sold / order_id:count_distinct",
+            "name": "per_order",
+            "label": "Units per order"
+          }
+        ],
+        "dimensions": [
+          "orders.stores.name",
+          "products.type"
+        ],
+        "time_dimensions": [
+          {
+            "dimension": "orders.ordered_at",
+            "granularity": "year",
+            "date_range": "this year"
+          }
+        ],
+        "filters": [],
+        "limit": 20
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Building level 4: Stores and trend",
+      "tool": "submit_level",
+      "input": {
+        "title": "Stores and trend",
+        "panels": 5
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "level",
+      "text": "Stores and trend",
+      "tool": null,
+      "input": null,
+      "level": 3,
+      "error": null
+    },
+    {
+      "kind": "note",
+      "text": "I'm adding a year-on-year comparison by product line, using complete months only.",
+      "tool": null,
+      "input": null,
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Building level 5: Year on year",
+      "tool": "submit_level",
+      "input": {
+        "title": "Year on year",
+        "panels": 6
+      },
+      "level": null,
+      "error": null
+    },
+    {
+      "kind": "level",
+      "text": "Year on year",
+      "tool": null,
+      "input": null,
+      "level": 4,
+      "error": null
+    },
+    {
+      "kind": "tool",
+      "text": "Finishing",
+      "tool": "finish",
+      "input": null,
+      "level": null,
+      "error": null
+    }
+  ],
+  "summary": "From the total units customers have bought this year, the ladder splits purchases into drinks and jaffles, then individual products, then stores, items per order and the monthly trend, and ends with a year-on-year comparison of complete months by product line.",
+  "usage": {
+    "input_tokens": 24,
+    "output_tokens": 5527,
+    "cache_read_input_tokens": 125271,
+    "cache_creation_input_tokens": 12044
+  }
+}

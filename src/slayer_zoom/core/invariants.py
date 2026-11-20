@@ -7,7 +7,7 @@ from slayer_zoom.core.models import Ladder, Level
 
 
 def monotonic_violations(ladder: Ladder) -> list[str]:
-    """Each level keeps every panel of the level before it, or refines it with a child panel."""
+    """Each level keeps every panel of the one before, query unchanged, or refines it with a child panel."""
     problems: list[str] = []
     for position, level in enumerate(ladder.levels):
         if level.index != position:
@@ -33,7 +33,10 @@ def _next_level_violations(previous: Level, current: Level) -> list[str]:
     current_ids = {panel.id for panel in current.panels}
     refined = {panel.parent for panel in current.panels if panel.parent is not None}
     previous_ids = {panel.id for panel in previous.panels}
+    current_queries = {panel.id: panel.query for panel in current.panels}
     for panel in previous.panels:
+        if panel.id in current_queries and current_queries[panel.id] != panel.query:
+            problems.append(f"level {current.index} changes the query of kept panel {panel.id}")
         if panel.id not in current_ids and panel.id not in refined:
             problems.append(f"level {current.index} drops panel {panel.id} without refining it")
     for panel in current.panels:

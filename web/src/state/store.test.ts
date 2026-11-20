@@ -50,3 +50,31 @@ describe("answer store", () => {
     expect(store.getState()).toMatchObject({ status: "error", error: "nope" });
   });
 });
+
+describe("answer store with a live agent", () => {
+  const live = [
+    `event: ladder\ndata: {"question":"q","levels":null}\n\n`,
+    `event: note\ndata: {"text":"Reading the context."}\n\n`,
+    `event: level\ndata: ${JSON.stringify(level(0))}\n\n`,
+    `event: note\ndata: {"text":"Splitting by store."}\n\n`,
+    `event: level\ndata: ${JSON.stringify(level(1))}\n\n`,
+    `event: done\ndata: {"summary":"Revenue, then by store."}\n\n`,
+  ];
+
+  it("keeps the level count open and collects notes until the agent is done", async () => {
+    const store = createAnswerStore(vi.fn(async () => sseResponse(live.slice(0, 3))));
+    const seen: (number | null)[] = [];
+    store.subscribe(() => seen.push(store.getState().expectedLevels));
+    await store.ask("q");
+    expect(seen).toContain(null);
+    expect(store.getState().notes).toEqual(["Reading the context."]);
+    expect(store.getState().levels).toHaveLength(1);
+  });
+
+  it("ends with the agent's summary", async () => {
+    const store = createAnswerStore(vi.fn(async () => sseResponse(live)));
+    await store.ask("q");
+    expect(store.getState()).toMatchObject({ status: "done", summary: "Revenue, then by store." });
+    expect(store.getState().notes).toEqual(["Reading the context.", "Splitting by store."]);
+  });
+});

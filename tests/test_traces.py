@@ -1,7 +1,25 @@
 import pytest
 
-from slayer_zoom.core import PanelData, SlayerQuery, monotonic_violations, query_hash, reconciles
-from slayer_zoom.traces import LADDER, ReplayRunner, TraceMiss, load_trace
+from slayer_zoom.core import (
+    AgentStep,
+    PanelData,
+    SlayerQuery,
+    StepKind,
+    monotonic_violations,
+    query_hash,
+    reconciles,
+)
+from slayer_zoom.traces import (
+    LADDER,
+    RecordingRunner,
+    ReplayRunner,
+    TraceMiss,
+    find_trace,
+    load_trace,
+    load_traces,
+    save_trace,
+    slug,
+)
 
 
 @pytest.fixture(scope="module")
@@ -44,3 +62,24 @@ def test_query_hash_ignores_key_order() -> None:
     b = SlayerQuery.model_validate({"dimensions": ["d"], "measures": ["x"], "source_model": "orders"})
     assert query_hash(a) == query_hash(b)
     assert isinstance(PanelData(columns=[], rows=[]), PanelData)
+
+
+def test_agent_traces_come_first_and_questions_match_loosely(trace, tmp_path) -> None:
+    agent = trace.model_copy(update={"steps": [AgentStep(kind=StepKind.NOTE, text="hi")]})
+    save_trace("a_handwritten", trace, tmp_path)
+    save_trace("b_agent", agent, tmp_path)
+    traces = load_traces(tmp_path)
+    assert traces[0].steps
+    assert find_trace("  WHAT is our revenue year to date ", traces) is traces[0]
+    assert find_trace("How many stores?", traces) is None
+
+
+def test_recording_runner_keeps_every_result(trace) -> None:
+    recorder = RecordingRunner(ReplayRunner(trace))
+    query = trace.ladder.levels[0].panels[0].query
+    assert recorder.run(query) == trace.results[query_hash(query)]
+    assert list(recorder.results) == [query_hash(query)]
+
+
+def test_slugs_are_file_names() -> None:
+    assert slug("What is our revenue, year to date?") == "what_is_our_revenue_year_to_date"

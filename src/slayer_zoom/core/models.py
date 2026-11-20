@@ -84,3 +84,21 @@ class ResolvedLevel(BaseModel):
     title: str
     rationale: str
     panels: list[ResolvedPanel]
+
+
+class StepKind(StrEnum):
+    NOTE = "note"
+    TOOL = "tool"
+    LEVEL = "level"
+
+
+class AgentStep(BaseModel):
+    """One step of an agent run, in order: a progress note, a tool call, or a level that landed."""
+
+    kind: StepKind
+    text: str = ""
+    tool: str | None = None
+    input: JsonValue = None
+    level: int | None = None
+    error: str | None = None
+    """Why the tool call failed, as the agent was told."""

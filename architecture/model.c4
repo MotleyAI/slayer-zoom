@@ -9,9 +9,25 @@ specification {
 }
 model {
   python = system 'Backend (Python)' {
+    agent = node 'Ladder agent' {
+      metadata {
+        package 'slayer_zoom.agent'
+        specs ['agent']
+      }
+    }
     api = node 'HTTP API' {
       metadata {
         package 'slayer_zoom.api'
+      }
+    }
+    catalog = node 'SLayer catalog' {
+      metadata {
+        package 'slayer_zoom.catalog'
+      }
+    }
+    context = node 'Business context' {
+      metadata {
+        package 'slayer_zoom.context'
       }
     }
     core = node 'Ladder domain' {
@@ -30,9 +46,16 @@ model {
       }
     }
 
+    agent -> catalog
+    agent -> context
+    agent -> core
+    agent -> executor
+    agent -> traces
+    api -> agent
     api -> core
     api -> executor
     api -> traces
+    catalog -> core
     executor -> core
     traces -> core
   }

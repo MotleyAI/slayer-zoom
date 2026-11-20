@@ -2,8 +2,10 @@ import json
 
 from fastapi.testclient import TestClient
 
+from slayer_zoom.agent import Emit
 from slayer_zoom.api import create_app
-from slayer_zoom.traces import QUESTION
+from slayer_zoom.core import AgentStep, StepKind, resolve_level
+from slayer_zoom.traces import QUESTION, ReplayRunner, Trace, load_trace
 
 
 def _events(body: str) -> list[tuple[str, dict]]:
@@ -26,7 +28,8 @@ def test_ladder_schema_names_the_levels() -> None:
 
 
 def test_answer_streams_every_level_from_the_trace() -> None:
-    response = TestClient(create_app()).post("/answer", json={"question": "what is our revenue year to date"})
+    app = create_app(traces=[load_trace("revenue_ytd")])
+    response = TestClient(app).post("/answer", json={"question": "what is our revenue year to date"})
     assert response.headers["content-type"].startswith("text/event-stream")
     events = _events(response.text)
     kinds = [kind for kind, _ in events]
@@ -40,3 +43,56 @@ def test_other_questions_get_a_pointer_to_the_demo_question() -> None:
     events = _events(TestClient(create_app()).post("/answer", json={"question": "How many stores?"}).text)
     assert events[0][0] == "error"
     assert QUESTION in events[0][1]["message"]
+
+
+def _agent_trace() -> Trace:
+    """The demo trace dressed as an agent run: notes and tool steps between its first two levels."""
+    recorded = load_trace("revenue_ytd")
+    ladder = recorded.ladder.model_copy(update={"levels": recorded.ladder.levels[:2]})
+    steps = [
+        AgentStep(kind=StepKind.NOTE, text="Reading the context."),
+        AgentStep(kind=StepKind.TOOL, text="Profiling stores.name in orders", tool="profile_dimension"),
+        AgentStep(kind=StepKind.LEVEL, text="Number", level=0),
+        AgentStep(kind=StepKind.LEVEL, text="Split", level=1),
+    ]
+    return recorded.model_copy(
+        update={"ladder": ladder, "steps": steps, "summary": "Revenue, then by store."}
+    )
+
+
+def test_replays_an_agent_trace_with_its_notes_in_order() -> None:
+    client = TestClient(create_app(traces=[_agent_trace()]))
+    events = _events(client.post("/answer", json={"question": QUESTION}).text)
+    assert [kind for kind, _ in events] == ["ladder", "note", "note", "level", "level", "done"]
+    assert events[1][1] == {"text": "Reading the context."}
+    assert events[-1][1] == {"summary": "Revenue, then by store."}
+
+
+def test_streams_a_live_agent_run_as_it_happens() -> None:
+    level = _agent_trace().ladder.levels[0]
+
+    def agent(question: str, emit: Emit) -> Trace | None:
+        emit("note", {"text": f"Thinking about {question}"})
+        emit("level", resolve_level(level, ReplayRunner(load_trace("revenue_ytd"))))
+        return _agent_trace()
+
+    client = TestClient(create_app(traces=[], agent=agent))
+    events = _events(client.post("/answer", json={"question": "How many orders?"}).text)
+    assert [kind for kind, _ in events] == ["ladder", "note", "level", "done"]
+    assert events[0][1] == {"question": "How many orders?", "levels": None}
+    assert events[2][1]["panels"][0]["data"]["rows"]
+
+
+def test_a_failing_agent_ends_the_stream_with_an_error() -> None:
+    def agent(question: str, emit: Emit) -> Trace | None:
+        raise RuntimeError("no credit")
+
+    events = _events(
+        TestClient(create_app(traces=[], agent=agent)).post("/answer", json={"question": "x"}).text
+    )
+    assert events[-1] == ("error", {"message": "The agent failed: no credit"})
+
+
+def test_lists_the_recorded_questions() -> None:
+    body = TestClient(create_app(traces=[_agent_trace()])).get("/questions").json()
+    assert body == {"recorded": [QUESTION], "live": False}

@@ -1,5 +1,6 @@
 from slayer_zoom.core.invariants import monotonic_violations, reconciles
 from slayer_zoom.core.models import (
+    AgentStep,
     Cell,
     Column,
     ColumnRole,
@@ -11,11 +12,13 @@ from slayer_zoom.core.models import (
     ResolvedLevel,
     ResolvedPanel,
     SlayerQuery,
+    StepKind,
     ValueFormat,
 )
 from slayer_zoom.core.resolve import QueryRunner, query_hash, resolve_level
 
 __all__ = [
+    "AgentStep",
     "Cell",
     "Column",
     "ColumnRole",
@@ -28,6 +31,7 @@ __all__ = [
     "ResolvedLevel",
     "ResolvedPanel",
     "SlayerQuery",
+    "StepKind",
     "ValueFormat",
     "monotonic_violations",
     "query_hash",

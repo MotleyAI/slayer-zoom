@@ -3,9 +3,11 @@ import { useAnswer, type AnswerStore } from "../state";
 
 export function GranularitySlider({ store }: { store: AnswerStore }) {
   const state = useAnswer(store);
-  const total = Math.max(state.expectedLevels, state.levels.length);
-  if (total === 0) return null;
   const ready = state.levels.length;
+  const building = state.status === "loading" || state.status === "streaming";
+  const total = state.expectedLevels ?? ready + (building ? 1 : 0);
+  const note = state.notes[state.notes.length - 1];
+  if (total === 0) return building ? <p className="progress">{note ?? "Starting…"}</p> : null;
   return (
     <div className="slider">
       <input
@@ -35,7 +37,12 @@ export function GranularitySlider({ store }: { store: AnswerStore }) {
           );
         })}
       </ol>
-      {ready < total && <p className="progress">Building level {ready + 1} of {total}…</p>}
+      {building && (
+        <p className="progress" aria-live="polite">
+          {note ?? (state.expectedLevels ? `Building level ${ready + 1} of ${total}…` : "Starting…")}
+        </p>
+      )}
+      {!building && state.summary && <p className="progress">{state.summary}</p>}
     </div>
   );
 }

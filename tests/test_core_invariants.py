@@ -54,3 +54,8 @@ def test_repeated_panel_ids_in_a_level_are_a_violation() -> None:
 )
 def test_reconciles(parent: float, children: list[float], expected: bool) -> None:
     assert reconciles(parent, children) is expected
+
+
+def test_changing_the_query_of_a_kept_panel_is_a_violation() -> None:
+    ladder = _ladder([_panel("total")], [_panel("total", PanelKind.KPI, None, "status")])
+    assert monotonic_violations(ladder) == ["level 1 changes the query of kept panel total"]
