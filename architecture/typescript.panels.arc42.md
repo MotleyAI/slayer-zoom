@@ -2,7 +2,8 @@
 
 ## Purpose and context
 
-Renders one resolved panel by kind: KPI, bar, table, line and delta, from its columns and rows.
+Renders one resolved panel by kind: KPI, bar, table, line and delta, from its columns and rows. The slider places
+each panel inline in the answer's text, after the sentence that introduces it.
 
 ## Building blocks
 

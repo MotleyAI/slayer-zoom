@@ -20,6 +20,12 @@ model {
         package 'slayer_zoom.api'
       }
     }
+    narrator = node 'Level narrator' {
+      metadata {
+        package 'slayer_zoom.narrator'
+        specs ['narration']
+      }
+    }
     catalog = node 'SLayer catalog' {
       metadata {
         package 'slayer_zoom.catalog'
@@ -54,9 +60,11 @@ model {
     api -> agent
     api -> core
     api -> executor
+    api -> narrator
     api -> traces
     catalog -> core
     executor -> core
+    narrator -> core
     traces -> core
   }
   typescript = system 'Web (TypeScript)' {

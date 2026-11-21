@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { takeEvents } from "./sse";
-import type { ResolvedLevel } from "./types";
+import type { ResolvedLevel, Segment } from "./types";
 
 export type Status = "idle" | "loading" | "streaming" | "done" | "error";
 
@@ -13,6 +13,11 @@ export interface AnswerState {
   notes: string[];
   summary: string;
   levels: ResolvedLevel[];
+  /** The answer's text so far, in reading order. */
+  narration: Segment[];
+  /** The last level whose text has arrived, or -1 when the answer has no text. */
+  narratedThrough: number;
+  /** Continuous slider position: 2.4 shows level 2 in full and 40% of level 3's added text. */
   position: number;
   error: string | null;
 }
@@ -33,6 +38,8 @@ const INITIAL: AnswerState = {
   notes: [],
   summary: "",
   levels: [],
+  narration: [],
+  narratedThrough: -1,
   position: 0,
   error: null,
 };
@@ -52,6 +59,9 @@ export function createAnswerStore(fetchImpl: typeof fetch = (...args) => fetch(.
       set({ notes: [...state.notes, (data as { text: string }).text] });
     } else if (event === "level") {
       set({ levels: [...state.levels, data as ResolvedLevel] });
+    } else if (event === "narration") {
+      const { level, segments } = data as { level: number; segments: Segment[] };
+      set({ narration: segments, narratedThrough: Math.max(state.narratedThrough, level) });
     } else if (event === "done") {
       set({ status: "done", summary: (data as { summary?: string }).summary ?? "" });
     } else if (event === "error") {
@@ -89,10 +99,15 @@ export function createAnswerStore(fetchImpl: typeof fetch = (...args) => fetch(.
       }
     },
     slide(position) {
-      const last = Math.max(state.levels.length - 1, 0);
-      set({ position: Math.min(Math.max(Math.round(position), 0), last) });
+      set({ position: Math.min(Math.max(position, 0), lastPosition(state)) });
     },
   };
+}
+
+/** The furthest the slider can go: the last level that has its data and, if the answer has text, its text. */
+export function lastPosition(state: AnswerState): number {
+  const ready = state.narratedThrough < 0 ? state.levels.length : Math.min(state.levels.length, state.narratedThrough + 1);
+  return Math.max(ready - 1, 0);
 }
 
 export function useAnswer(store: AnswerStore): AnswerState {

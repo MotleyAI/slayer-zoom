@@ -8,7 +8,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from slayer_zoom.core import AgentStep, Ladder, PanelData, QueryRunner, SlayerQuery, query_hash
+from slayer_zoom.core import AgentStep, Ladder, PanelData, QueryRunner, Segment, SlayerQuery, query_hash
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -21,6 +21,9 @@ class Trace(BaseModel):
     """The agent run that built the ladder, in order. Empty for a hand-written ladder."""
     summary: str = ""
     usage: dict[str, int] = {}
+    """Tokens the agent run used, by kind."""
+    narration: list[Segment] = []
+    """The answer's text in reading order; each segment carries the level it appears at."""
     """Tokens the agent run used, by kind."""
 
 

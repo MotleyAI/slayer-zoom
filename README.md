@@ -19,7 +19,7 @@ writes no new SQL for any step, and every number reconciles with the step before
 | 3 Segments | + new vs returning customers, monthly trend |
 | 4 Analysis | + year over year, month over month, share of total, biggest movers |
 
-> Status: prototype, milestone M2 (the ladder agent). See the [plan](docs/plan.md).
+> Status: prototype, milestones M2 (the ladder agent) and M3 (a continuous slider over text that grows in place). See the [plan](docs/plan.md).
 
 ## Run it
 
@@ -44,14 +44,16 @@ SLAYER_ZOOM_LIVE=1 ANTHROPIC_API_KEY=... uv run uvicorn --factory slayer_zoom.ap
 
 The agent (`claude-opus-5-5` in the Anthropic SDK Tool Runner) reads the semantic layer and
 `src/slayer_zoom/context/jaffle_shop.md`, profiles the dimensions it wants to split by, and submits levels one at a
-time; each level is validated, run and streamed as soon as it is accepted, with the agent's progress notes. A recorded
-question still replays for free. To record a new trace:
+time; each level is validated, run and streamed as soon as it is accepted, with the agent's progress notes. As each level lands,
+a narrator (`claude-sonnet-5-5`) inserts a sentence or two into the answer's text, introducing each new chart;
+every figure it writes must appear in that level's rows. The slider is continuous: between two levels, the next
+level's words appear in place as you drag, and each chart appears once its sentence is complete. A recorded
+question still replays for free, from its recorded rows. To record a new trace:
 
 ```bash
-uv run python -m slayer_zoom.agent.record "How are our stores doing this year?"
+uv run python -m slayer_zoom.api.record "How are our stores doing this year?"
+uv run python -m slayer_zoom.api.record --narrate agent_revenue_ytd   # re-narrate a stored trace
 ```
-
-`python -m slayer_zoom.api.record` re-records the hand-written M1 ladder.
 
 ## Checks
 

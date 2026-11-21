@@ -1594,5 +1594,43 @@
     "output_tokens": 5527,
     "cache_read_input_tokens": 125271,
     "cache_creation_input_tokens": 12044
-  }
+  },
+  "narration": [
+    {
+      "id": "units_total_sentence",
+      "level": 0,
+      "text": "Customers have bought 274,061 units so far this year.",
+      "panel": "units_total"
+    },
+    {
+      "id": "by_type_sentence",
+      "level": 1,
+      "text": "Beverages make up most of that at 212,122 units, or 77.4% of the total, while jaffles account for 61,939 units, or 22.6%.",
+      "panel": "by_type"
+    },
+    {
+      "id": "by_product_sentence",
+      "level": 2,
+      "text": "Within each line, sales are spread almost evenly: the five beverages each take about 15.4% to 15.5% of units, led by for richer or pourover at 42,578 units, and the five jaffles each take about 4.5% to 4.6%, led by nutellaphone who dis? at 12,518 units.",
+      "panel": "by_product"
+    },
+    {
+      "id": "store_mix_sentence",
+      "level": 3,
+      "text": "By store, Brooklyn is the largest with 112,763 beverages and 33,409 jaffles, followed by Philadelphia with 71,050 and 21,344, while Chicago and San Francisco opened in July and are much smaller; an order that contains a line typically holds about 1.2 beverages or 1.4 to 1.6 jaffles.",
+      "panel": "store_mix"
+    },
+    {
+      "id": "monthly_mix_sentence",
+      "level": 3,
+      "text": "Month by month, both lines peaked in August at 25,136 beverages and 7,268 jaffles, and November's 15,797 and 3,986 are low because the month is only partly complete.",
+      "panel": "monthly_mix"
+    },
+    {
+      "id": "yoy_sentence",
+      "level": 4,
+      "text": "Against the same months last year, growth has cooled: beverages were up 5.4 times in January (16,538 units against 2,575) but only about 1.1 times in October (22,737 against 10,946), with jaffles following the same path, and since the comparison includes the new stores, not all of it is like-for-like growth.",
+      "panel": "mix_yoy"
+    }
+  ]
 }

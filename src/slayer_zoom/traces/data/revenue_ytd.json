@@ -1246,5 +1246,58 @@
         }
       ]
     }
-  }
+  },
+  "steps": [],
+  "summary": "",
+  "usage": {},
+  "narration": [
+    {
+      "id": "ytd_revenue",
+      "level": 0,
+      "text": "Revenue year to date is $2.06M.",
+      "panel": "total"
+    },
+    {
+      "id": "monthly_trend",
+      "level": 3,
+      "text": "Monthly revenue held between $158.0K and $211.2K from January to October, peaking at $245.5K in August, and November is lower at $143.2K.",
+      "panel": "monthly"
+    },
+    {
+      "id": "yoy_note",
+      "level": 4,
+      "text": "Every complete month from January to October beat the same month last year, with growth of 553.4% in January easing to about 107.1% in October.",
+      "panel": "monthly_change"
+    },
+    {
+      "id": "mom_note",
+      "level": 4,
+      "text": "Month on month, August jumped 23.3% and September fell 17.2%, while October recovered 3.9%.",
+      "panel": null
+    },
+    {
+      "id": "store_split",
+      "level": 1,
+      "text": "Brooklyn is the largest contributor at $1.09M, followed by Philadelphia at $708.2K, while Chicago ($148.1K) and San Francisco ($113.7K) add much less.",
+      "panel": "by_store"
+    },
+    {
+      "id": "driver_note",
+      "level": 3,
+      "text": "Brooklyn's lead comes from volume, with 102,137 orders and 52.9% of revenue, while average order value is similar across stores, from $10.66 in Brooklyn to $11.55 in Philadelphia.",
+      "panel": "store_drivers"
+    },
+    {
+      "id": "mix_intro",
+      "level": 2,
+      "text": "Beverages dominate units in every store, with Brooklyn selling 114,987 beverages against 33,530 jaffles.",
+      "panel": "store_mix"
+    },
+    {
+      "id": "top_products_note",
+      "level": 2,
+      "text": "Across the menu, the top five products are tightly bunched, led by adele-ade at 43,019 units and vanilla ice fifth at 42,244.",
+      "panel": "top_products"
+    }
+  ]
 }

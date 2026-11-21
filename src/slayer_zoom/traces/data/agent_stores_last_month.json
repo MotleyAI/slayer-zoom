@@ -1727,5 +1727,61 @@
     "output_tokens": 6502,
     "cache_read_input_tokens": 106376,
     "cache_creation_input_tokens": 13624
-  }
+  },
+  "narration": [
+    {
+      "id": "total_sentence",
+      "level": 0,
+      "text": "Across all stores, gross revenue last month came to $208.4K.",
+      "panel": "total"
+    },
+    {
+      "id": "total_change_sentence",
+      "level": 3,
+      "text": "That is up 5.8% on the previous month and 106.4% on the same month last year, though the year-on-year figure includes stores that have since opened.",
+      "panel": "total_change"
+    },
+    {
+      "id": "store_split",
+      "level": 1,
+      "text": "Brooklyn led with $84.4K, followed by Philadelphia at $53.1K, Chicago at $38.1K and San Francisco at $32.7K.",
+      "panel": "by_store"
+    },
+    {
+      "id": "driver_share",
+      "level": 2,
+      "text": "Brooklyn alone accounted for 40.5% of revenue, with Philadelphia at 25.5%, Chicago at 18.3% and San Francisco at 15.7%.",
+      "panel": "store_drivers"
+    },
+    {
+      "id": "driver_orders",
+      "level": 2,
+      "text": "Brooklyn's lead comes from volume, with 7,839 orders from 556 customers, while average order size was similar everywhere, from $10.39 in Chicago to $10.99 in San Francisco.",
+      "panel": null
+    },
+    {
+      "id": "store_change_sentence",
+      "level": 3,
+      "text": "By store, Brooklyn slipped 4.1% on the previous month and Philadelphia 1.9%, while Chicago grew 26.3% and San Francisco 32.5%.",
+      "panel": "store_change"
+    },
+    {
+      "id": "store_yoy_sentence",
+      "level": 3,
+      "text": "Against last year Brooklyn is up 61.3% and Philadelphia 9.2%, while Chicago and San Francisco have no comparison because they opened in July.",
+      "panel": null
+    },
+    {
+      "id": "trend_sentence",
+      "level": 4,
+      "text": "Month by month, Brooklyn peaked at $114.3K in May and has fallen back since August, while Philadelphia has eased from $73.5K in March, and Chicago and San Francisco have grown since opening in July.",
+      "panel": "store_trend"
+    },
+    {
+      "id": "mix_sentence",
+      "level": 4,
+      "text": "Beverages dominate the mix everywhere, with Brooklyn selling 9,240 beverages against 2,449 jaffles and Chicago 4,221 against 1,020.",
+      "panel": "store_mix"
+    }
+  ]
 }

@@ -10,12 +10,14 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from slayer_zoom.agent import Emit, EventKind, answer_live
-from slayer_zoom.core import Ladder, QueryRunner, ResolvedLevel, StepKind, resolve_level
-from slayer_zoom.executor import demo_executor
+from slayer_zoom.core import Ladder, ResolvedLevel, Segment, StepKind, resolve_level, text_at
+from slayer_zoom.narrator import Narrator, live_narrator
 from slayer_zoom.traces import ReplayRunner, Trace, find_trace, load_traces
 
 Agent = Callable[[str, Emit], Trace | None]
 """Builds a ladder for a question, emitting notes and levels as they happen."""
+NarratorFactory = Callable[[str], Narrator]
+"""Makes the narrator that writes one answer's text."""
 
 
 class AnswerRequest(BaseModel):
@@ -42,44 +44,76 @@ def _default_agent() -> Agent | None:
     return lambda question, emit: answer_live(question, emit=emit, storage_path=_storage())
 
 
-def replay(trace: Trace, runner: QueryRunner) -> Iterator[str]:
-    """A stored trace as the event stream a live run produces: notes and levels in recorded order."""
+def _narration(level: int, segments: list[Segment]) -> str:
+    return _sse("narration", {"level": level, "segments": [s.model_dump(mode="json") for s in segments]})
+
+
+def replay(trace: Trace) -> Iterator[str]:
+    """A stored trace as the event stream a live run produces: notes, levels and text in recorded order.
+
+    Always from the recorded results, so the text and the charts come from the same rows.
+    """
+    runner = ReplayRunner(trace)
     ladder = trace.ladder
     yield _sse("ladder", {"question": ladder.question, "levels": len(ladder.levels)})
     levels = {level.index: level for level in ladder.levels}
-    landed: set[int] = set()
-    for step in trace.steps:
-        if step.kind == StepKind.LEVEL and step.level in levels:
-            landed.add(step.level)
-            yield _sse("level", resolve_level(levels[step.level], runner))
-        elif step.kind != StepKind.LEVEL and step.text:
+    order = [s.level for s in trace.steps if s.kind == StepKind.LEVEL and s.level in levels]
+    order += [index for index in levels if index not in order]
+    pending = list(trace.steps)
+    for index in order:
+        while pending and not (pending[0].kind == StepKind.LEVEL and pending[0].level == index):
+            step = pending.pop(0)
+            if step.kind != StepKind.LEVEL and step.text:
+                yield _sse("note", {"text": step.text})
+        if pending:
+            pending.pop(0)
+        yield _sse("level", resolve_level(levels[index], runner))
+        if trace.narration:
+            yield _narration(index, text_at(trace.narration, index))
+    for step in pending:
+        if step.kind != StepKind.LEVEL and step.text:
             yield _sse("note", {"text": step.text})
-    for level in ladder.levels:
-        if level.index not in landed:
-            yield _sse("level", resolve_level(level, runner))
     yield _sse("done", {"summary": trace.summary})
 
 
-def run_live(question: str, agent: Agent) -> Iterator[str]:
-    """Runs the agent in a thread and streams its notes and levels as they land."""
+def run_live(question: str, agent: Agent, narrator: NarratorFactory | None = None) -> Iterator[str]:
+    """Runs the agent in a thread, narrates each level in a second thread, and streams both as they land."""
     events: queue.Queue[tuple[str, object]] = queue.Queue()
+    landed: queue.Queue[ResolvedLevel | None] = queue.Queue()
 
     def emit(kind: EventKind, data: object) -> None:
         events.put((kind, data))
+        if kind == "level" and isinstance(data, ResolvedLevel):
+            landed.put(data)
+
+    def narrate() -> None:
+        writer = narrator(question) if narrator else None
+        while (level := landed.get()) is not None:
+            if writer is None:
+                continue
+            try:
+                events.put(("narration", (level.index, list(writer.narrate(level)))))
+            except Exception as error:  # a level without text still shows its panels
+                events.put(("note", {"text": f"No text for level {level.index + 1}: {error}"}))
 
     def work() -> None:
         try:
             trace = agent(question, emit)
-            events.put(("done", {"summary": trace.summary if trace else ""}))
+            summary: dict[str, object] = {"summary": trace.summary if trace else ""}
         except Exception as error:  # the stream must end with a message, whatever failed
-            events.put(("error", {"message": f"The agent failed: {error}"}))
+            summary = {"message": f"The agent failed: {error}"}
+        landed.put(None)
+        writer_thread.join()
+        events.put(("error" if "message" in summary else "done", summary))
 
+    writer_thread = threading.Thread(target=narrate, daemon=True)
+    writer_thread.start()
     threading.Thread(target=work, daemon=True).start()
     yield _sse("ladder", {"question": question, "levels": None})
     while True:
         kind, data = events.get()
-        if kind == "level" and isinstance(data, ResolvedLevel):
-            yield _sse("level", data)
+        if kind == "narration" and isinstance(data, tuple):
+            yield _narration(*data)
         else:
             yield _sse(kind, data)
         if kind in ("done", "error"):
@@ -88,13 +122,13 @@ def run_live(question: str, agent: Agent) -> Iterator[str]:
 
 def create_app(
     traces: list[Trace] | None = None,
-    runner: QueryRunner | None = None,
     agent: Agent | None = None,
+    narrator: NarratorFactory | None = None,
 ) -> FastAPI:
     app = FastAPI(title="slayer-zoom")
     stored = traces if traces is not None else load_traces()
-    live_runner = runner or (demo_executor(_storage()) if _live() else None)
     live_agent = agent or _default_agent()
+    live_writer = narrator or (live_narrator if live_agent is not None and agent is None else None)
 
     @app.get("/health")
     def health() -> dict[str, str]:
@@ -113,9 +147,9 @@ def create_app(
     def answer(request: AnswerRequest) -> StreamingResponse:
         def events() -> Iterator[str]:
             if trace := find_trace(request.question, stored):
-                yield from replay(trace, live_runner or ReplayRunner(trace))
+                yield from replay(trace)
             elif live_agent is not None:
-                yield from run_live(request.question, live_agent)
+                yield from run_live(request.question, live_agent, live_writer)
             else:
                 asked = "; ".join(dict.fromkeys(t.ladder.question for t in stored))
                 yield _sse(

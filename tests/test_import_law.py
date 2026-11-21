@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 PACKAGE = Path(__file__).parents[1] / "src" / "slayer_zoom"
-OWNERS = {"slayer": {"catalog", "executor"}, "anthropic": {"agent"}}
+OWNERS = {"slayer": {"catalog", "executor"}, "anthropic": {"agent", "narrator"}}
 
 
 def _imports(path: Path) -> set[str]:

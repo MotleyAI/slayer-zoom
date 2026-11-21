@@ -30,3 +30,12 @@ export interface ResolvedLevel {
   rationale: string;
   panels: ResolvedPanel[];
 }
+
+/** One piece of the answer's text. Level n's text is every segment with level <= n, in order. */
+export interface Segment {
+  id: string;
+  level: number;
+  text: string;
+  /** The panel shown right after this segment, if it introduces one. */
+  panel: string | null;
+}

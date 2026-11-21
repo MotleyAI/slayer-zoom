@@ -1545,5 +1545,49 @@
     "output_tokens": 5339,
     "cache_read_input_tokens": 83384,
     "cache_creation_input_tokens": 20929
-  }
+  },
+  "narration": [
+    {
+      "id": "ytd_revenue",
+      "level": 0,
+      "text": "Gross revenue year to date is $2.03M.",
+      "panel": "total"
+    },
+    {
+      "id": "monthly_note",
+      "level": 3,
+      "text": "Month by month, revenue ran between $154.5K and $208.4K until August peaked at $240.1K, and November is only a partial month at $143.6K.",
+      "panel": "monthly"
+    },
+    {
+      "id": "store_split",
+      "level": 1,
+      "text": "Brooklyn leads with $1.07M, followed by Philadelphia at $692.8K, while Chicago ($146.0K) and San Francisco ($115.2K) only opened in July.",
+      "panel": "by_store"
+    },
+    {
+      "id": "store_mix_note",
+      "level": 2,
+      "text": "Beverages dominate every store's mix, with Brooklyn selling 112,763 beverage units against 33,409 jaffles.",
+      "panel": "store_mix"
+    },
+    {
+      "id": "drivers_note",
+      "level": 3,
+      "text": "Brooklyn holds 53.0% of revenue and Philadelphia 34.2%, and average order values are close across stores, from $10.50 in Chicago to $11.02 in Philadelphia, so order volume (98,951 orders in Brooklyn) drives the gap.",
+      "panel": "store_drivers"
+    },
+    {
+      "id": "yoy_note",
+      "level": 4,
+      "text": "Every complete month is well above the same month last year, from 537.5% in January to 106.4% in October, though that includes the new stores; against the month before, August rose 22.4% and September fell 17.9%.",
+      "panel": "monthly_change"
+    },
+    {
+      "id": "top_prod_note",
+      "level": 2,
+      "text": "No single product stands out, as the top five each sold between 42,312 and 42,578 units, led by for richer or pourover at 42,578.",
+      "panel": "top_products"
+    }
+  ]
 }

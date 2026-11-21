@@ -15,6 +15,7 @@ flowchart TD
   %% python: Backend
   agent["Ladder agent"]
   api["HTTP API"]
+  narrator["Level narrator"]
   catalog["SLayer catalog"]
   context["Business context"]
   core["Ladder domain"]
@@ -28,9 +29,11 @@ flowchart TD
   api --> agent
   api --> core
   api --> executor
+  api --> narrator
   api --> traces
   catalog --> core
   executor --> core
+  narrator --> core
   traces --> core
 ```
 <!-- /likec4:python -->
@@ -55,7 +58,7 @@ flowchart TD
 1. Numbers reach the reader only from SLayer results. No component writes SQL, and no LLM output is shown as a number. [enforced: test:tests/test_agent_loop.py]
 2. Moving the slider never calls an LLM or the database: every level is computed when the question is answered. [enforced: test:web/src/state/store.test.ts]
 3. Every ladder can be re-rendered from its stored trace without an API key, and the checks in CI never need one. [enforced: test:tests/test_traces.py]
-4. Every number in a narration appears in the result rows of its level. [target: #3]
+4. Every number in a narration appears in the result rows of its level. [enforced: test:tests/test_narrator.py]
 5. Only the elements that own an integration import its client: SLayer in the catalog and the executor, Anthropic in the agent and, from #3, the narrator. [enforced: test:tests/test_import_law.py]
 6. Web panels render a panel and its rows, and never compute numbers. [review] [lang: typescript]
 

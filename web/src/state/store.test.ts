@@ -78,3 +78,25 @@ describe("answer store with a live agent", () => {
     expect(store.getState().notes).toEqual(["Reading the context.", "Splitting by store."]);
   });
 });
+
+describe("answer store with narration", () => {
+  const seg = (id: string, lvl: number) => ({ id, level: lvl, text: "Text.", panel: null });
+  const narrated = [
+    `event: ladder\ndata: {"question":"q","levels":3}\n\n`,
+    `event: level\ndata: ${JSON.stringify(level(0))}\n\n`,
+    `event: narration\ndata: ${JSON.stringify({ level: 0, segments: [seg("a", 0)] })}\n\n`,
+    `event: level\ndata: ${JSON.stringify(level(1))}\n\n`,
+    `event: narration\ndata: ${JSON.stringify({ level: 1, segments: [seg("a", 0), seg("b", 1)] })}\n\n`,
+    `event: level\ndata: ${JSON.stringify(level(2))}\n\n`,
+  ];
+
+  it("keeps the latest text and slides continuously, but not past the last narrated level", async () => {
+    const store = createAnswerStore(vi.fn(async () => sseResponse(narrated)));
+    await store.ask("q");
+    expect(store.getState().narration.map((s) => s.id)).toEqual(["a", "b"]);
+    store.slide(0.37);
+    expect(store.getState().position).toBeCloseTo(0.37);
+    store.slide(2);
+    expect(store.getState().position).toBe(1);
+  });
+});

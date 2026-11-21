@@ -50,7 +50,8 @@ header p { margin: 4px 0 24px; color: var(--muted); }
 .slider { margin: 32px 0 8px; }
 .slider input[type="range"] {
   width: 100%; appearance: none; height: 6px; border-radius: 3px; margin: 0;
-  background: linear-gradient(to right, var(--accent) var(--fill), var(--line) var(--fill));
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--accent-soft) var(--fill),
+    var(--accent-soft) var(--reach), var(--line) var(--reach));
 }
 .slider input[type="range"]::-webkit-slider-thumb {
   appearance: none; width: 22px; height: 22px; border-radius: 50%;
@@ -102,3 +103,14 @@ td.down { color: var(--down); }
 .line figcaption { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; margin-top: 6px; }
 .line figcaption strong { color: var(--ink); }
 .empty { color: var(--muted); }
+
+.answer { margin-top: 24px; }
+.stretch { font-size: 18px; line-height: 1.65; margin: 0 0 14px; max-width: 64ch; text-wrap: pretty; }
+.stretch .word { animation: word-in 260ms ease-out both; }
+@keyframes word-in { from { opacity: 0; filter: blur(2px); } }
+.stretch .segment.level-0 { font-weight: 550; }
+.inline-panel { margin: 4px 0 18px; animation: unfold 420ms cubic-bezier(.2,.7,.2,1) both; transform-origin: top; }
+@keyframes unfold { from { opacity: 0; transform: translateY(-4px) scaleY(.96); } }
+@media (prefers-reduced-motion: reduce) {
+  .stretch .word, .inline-panel { animation: none; }
+}

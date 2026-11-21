@@ -15,12 +15,21 @@ from slayer_zoom.core.models import (
     StepKind,
     ValueFormat,
 )
+from slayer_zoom.core.narration import (
+    Insertion,
+    Segment,
+    expansion_violations,
+    insert_segments,
+    text_at,
+    ungrounded_numbers,
+)
 from slayer_zoom.core.resolve import QueryRunner, query_hash, resolve_level
 
 __all__ = [
     "AgentStep",
     "Cell",
     "Column",
+    "Insertion",
     "ColumnRole",
     "Ladder",
     "Level",
@@ -30,11 +39,16 @@ __all__ = [
     "QueryRunner",
     "ResolvedLevel",
     "ResolvedPanel",
+    "Segment",
     "SlayerQuery",
     "StepKind",
     "ValueFormat",
     "monotonic_violations",
+    "expansion_violations",
+    "insert_segments",
     "query_hash",
     "reconciles",
     "resolve_level",
+    "text_at",
+    "ungrounded_numbers",
 ]

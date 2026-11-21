@@ -41,6 +41,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
 "src/slayer_zoom/agent/prompts.py" = ["E501"]
+"src/slayer_zoom/narrator/prompts.py" = ["E501"]
 
 [tool.basedpyright]
 include = ["src", "tests"]

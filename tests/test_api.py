@@ -1,10 +1,12 @@
 import json
+from typing import cast
 
 from fastapi.testclient import TestClient
 
 from slayer_zoom.agent import Emit
 from slayer_zoom.api import create_app
-from slayer_zoom.core import AgentStep, StepKind, resolve_level
+from slayer_zoom.api.app import NarratorFactory
+from slayer_zoom.core import AgentStep, ResolvedLevel, Segment, StepKind, resolve_level
 from slayer_zoom.traces import QUESTION, ReplayRunner, Trace, load_trace
 
 
@@ -33,7 +35,16 @@ def test_answer_streams_every_level_from_the_trace() -> None:
     assert response.headers["content-type"].startswith("text/event-stream")
     events = _events(response.text)
     kinds = [kind for kind, _ in events]
-    assert kinds == ["ladder", "level", "level", "level", "level", "level", "done"]
+    assert [k for k in kinds if k != "narration"] == [
+        "ladder",
+        "level",
+        "level",
+        "level",
+        "level",
+        "level",
+        "done",
+    ]
+    assert kinds.count("narration") == 5
     levels = [data for kind, data in events if kind == "level"]
     assert [level["index"] for level in levels] == [0, 1, 2, 3, 4]
     assert levels[0]["panels"][0]["data"]["rows"][0]["orders.revenue"] > 0
@@ -56,7 +67,7 @@ def _agent_trace() -> Trace:
         AgentStep(kind=StepKind.LEVEL, text="Split", level=1),
     ]
     return recorded.model_copy(
-        update={"ladder": ladder, "steps": steps, "summary": "Revenue, then by store."}
+        update={"ladder": ladder, "steps": steps, "summary": "Revenue, then by store.", "narration": []}
     )
 
 
@@ -96,3 +107,41 @@ def test_a_failing_agent_ends_the_stream_with_an_error() -> None:
 def test_lists_the_recorded_questions() -> None:
     body = TestClient(create_app(traces=[_agent_trace()])).get("/questions").json()
     assert body == {"recorded": [QUESTION], "live": False}
+
+
+def test_replay_sends_the_text_up_to_each_level_after_it() -> None:
+    narration = [
+        Segment(id="answer", level=0, text="Revenue is up.", panel="total"),
+        Segment(id="stores", level=1, text="Brooklyn leads.", panel="by_store"),
+    ]
+    trace = _agent_trace().model_copy(update={"narration": narration})
+    events = _events(TestClient(create_app(traces=[trace])).post("/answer", json={"question": QUESTION}).text)
+    texts = [[s["id"] for s in data["segments"]] for kind, data in events if kind == "narration"]
+    assert texts == [["answer"], ["answer", "stores"]]
+    kinds = [kind for kind, _ in events]
+    assert kinds.index("narration") == kinds.index("level") + 1
+
+
+class _FakeNarrator:
+    def __init__(self, question: str) -> None:
+        self.segments: list[Segment] = []
+
+    def narrate(self, level: ResolvedLevel) -> list[Segment]:
+        self.segments.append(Segment(id=f"s{level.index}", level=level.index, text="Text."))
+        return self.segments
+
+
+def test_a_live_run_narrates_each_level_before_it_is_done() -> None:
+    level = _agent_trace().ladder.levels[0]
+
+    def agent(question: str, emit: Emit) -> Trace | None:
+        emit("level", resolve_level(level, ReplayRunner(load_trace("revenue_ytd"))))
+        return _agent_trace()
+
+    app = create_app(traces=[], agent=agent, narrator=cast(NarratorFactory, _FakeNarrator))
+    events = _events(TestClient(app).post("/answer", json={"question": "How many orders?"}).text)
+    assert [kind for kind, _ in events] == ["ladder", "level", "narration", "done"]
+    assert events[2][1] == {
+        "level": 0,
+        "segments": [{"id": "s0", "level": 0, "text": "Text.", "panel": None}],
+    }
