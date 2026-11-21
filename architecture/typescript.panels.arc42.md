@@ -2,8 +2,9 @@
 
 ## Purpose and context
 
-Renders one resolved panel by kind: KPI, bar, table, line and delta, from its columns and rows. The slider places
-each panel inline in the answer's text, after the sentence that introduces it.
+Renders one resolved panel by kind: KPI, bar, table, line and delta, from its columns and rows, through OpenUI
+components (bar and line charts, table, card). The resizable answer places each panel inline in the answer's text,
+after the sentence that introduces it.
 
 ## Building blocks
 

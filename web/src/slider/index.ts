@@ -1,1 +1,1 @@
-export { GranularitySlider, ZoomedAnswer } from "./Slider";
+export { ResizableAnswer } from "./Answer";

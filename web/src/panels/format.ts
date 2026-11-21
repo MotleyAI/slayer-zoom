@@ -43,3 +43,15 @@ export function measures(data: PanelData): Column[] {
 export function labelOf(row: Record<string, Cell>, dimensions: Column[]): string {
   return dimensions.map((column) => formatCell(row[column.key] ?? null, column)).join(" · ");
 }
+
+/** A chart series' name: the column label with its unit, since OpenUI charts print bare compact numbers. */
+export function seriesName(column: Column): string {
+  const unit = column.format === "currency" ? " ($)" : column.format === "percent" ? " (%)" : "";
+  return `${column.label}${unit}`;
+}
+
+/** A value as a chart plots it: a share in percent points, so axis and tooltip match the "(%)" in the name. */
+export function chartValue(value: Cell, column: Column): number {
+  if (typeof value !== "number") return 0;
+  return column.format === "percent" ? value * 100 : value;
+}

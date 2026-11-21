@@ -1,5 +1,5 @@
 [project]
-name = "slayer-zoom"
+name = "galaxy-brain"
 version = "0.0.1"
 description = "A granularity slider for data answers: one question, an agent-built ladder from a single number to full analysis, on SLayer."
 readme = "README.md"

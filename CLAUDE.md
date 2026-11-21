@@ -1,4 +1,4 @@
-# slayer-zoom
+# galaxy-brain (Galaxy brain UX experiment by Motley)
 
 A granularity slider for data answers on SLayer. The plan is in `docs/plan.md`; milestones are GitHub issues #1–#5.
 

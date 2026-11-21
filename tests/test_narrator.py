@@ -6,7 +6,8 @@ import pytest
 
 from slayer_zoom.core import ResolvedLevel, expansion_violations, resolve_level, ungrounded_numbers
 from slayer_zoom.narrator import MODEL, Draft, DraftInsertion, Narrator
-from slayer_zoom.traces import ReplayRunner, load_trace
+from slayer_zoom.narrator.narrator import plain
+from slayer_zoom.traces import ReplayRunner, load_trace, load_traces
 
 
 class _Reply:
@@ -48,8 +49,8 @@ def _millions(level: ResolvedLevel) -> str:
     return f"${value / 1e6:.2f}M"
 
 
-def _d(*items: DraftInsertion) -> Draft:
-    return Draft(insertions=list(items))
+def _d(*items: DraftInsertion, summary: str = "Revenue is healthy.") -> Draft:
+    return Draft(insertions=list(items), question="How much revenue?", headline="Healthy", summary=summary)
 
 
 def test_inserts_the_draft_and_introduces_each_new_panel(levels: list[ResolvedLevel]) -> None:
@@ -107,3 +108,41 @@ def test_later_levels_only_insert(levels: list[ResolvedLevel]) -> None:
     assert expansion_violations(first, second) == []
     assert [s.id for s in second] == ["answer", "stores"]
     assert second[1].level == 1
+
+
+def test_each_level_gets_a_grounded_digest(levels: list[ResolvedLevel]) -> None:
+    total = _millions(levels[0])
+    draft = _d(DraftInsertion(id="answer", text=f"Revenue is {total}.", panel="total"), summary=f"{total}.")
+    client = _Client([draft])
+    narrator = Narrator("q", client)
+    narrator.narrate(levels[0])
+    assert [(d.level, d.question, d.headline, d.summary) for d in narrator.digests] == [
+        (0, "How much revenue?", "Healthy", f"{total}.")
+    ]
+
+
+def test_an_ungrounded_digest_falls_back_to_the_level_title_and_previous_summary(
+    levels: list[ResolvedLevel],
+) -> None:
+    good = _d(DraftInsertion(id="answer", text=f"Revenue is {_millions(levels[0])}.", panel="total"))
+    bad = Draft(question="What?", headline="$9.99M", summary="Revenue is $9.99M.")
+    narrator = Narrator("q", _Client([good, bad, bad]))
+    narrator.narrate(levels[0])
+    narrator.narrate(levels[1])
+    digest = narrator.digests[1]
+    assert (digest.headline, digest.summary) == (levels[1].title, "Revenue is healthy.")
+
+
+def test_markup_never_reaches_the_reader() -> None:
+    assert plain("Brooklyn leads.</br> **Volume**, not `price`.") == "Brooklyn leads. Volume, not price."
+
+
+def test_stored_digests_cite_only_figures_from_their_depth_or_earlier() -> None:
+    for trace in load_traces():
+        runner = ReplayRunner(trace)
+        rows: list[dict] = []
+        for level in trace.ladder.levels:
+            rows += [row for panel in resolve_level(level, runner).panels for row in panel.data.rows]
+            for digest in [d for d in trace.digests if d.level == level.index]:
+                text = f"{digest.question} {digest.headline} {digest.summary}"
+                assert ungrounded_numbers(text, rows) == [], (trace.ladder.question, digest.level)

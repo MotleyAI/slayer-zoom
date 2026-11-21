@@ -23,7 +23,7 @@ def narrate(trace: Trace) -> Trace:
     for level in trace.ladder.levels:
         narrator.narrate(resolve_level(level, runner))
         print("narrated level", level.index + 1, file=sys.stderr)
-    return trace.model_copy(update={"narration": narrator.segments})
+    return trace.model_copy(update={"narration": narrator.segments, "digests": narrator.digests})
 
 
 def main() -> None:

@@ -10,7 +10,16 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from slayer_zoom.agent import Emit, EventKind, answer_live
-from slayer_zoom.core import Ladder, ResolvedLevel, Segment, StepKind, resolve_level, text_at
+from slayer_zoom.core import (
+    Digest,
+    Ladder,
+    ResolvedLevel,
+    Segment,
+    StepKind,
+    digest_at,
+    resolve_level,
+    text_at,
+)
 from slayer_zoom.narrator import Narrator, live_narrator
 from slayer_zoom.traces import ReplayRunner, Trace, find_trace, load_traces
 
@@ -44,8 +53,15 @@ def _default_agent() -> Agent | None:
     return lambda question, emit: answer_live(question, emit=emit, storage_path=_storage())
 
 
-def _narration(level: int, segments: list[Segment]) -> str:
-    return _sse("narration", {"level": level, "segments": [s.model_dump(mode="json") for s in segments]})
+def _narration(level: int, segments: list[Segment], digests: list[Digest]) -> str:
+    return _sse(
+        "narration",
+        {
+            "level": level,
+            "segments": [s.model_dump(mode="json") for s in segments],
+            "digests": [d.model_dump(mode="json") for d in digests],
+        },
+    )
 
 
 def replay(trace: Trace) -> Iterator[str]:
@@ -69,7 +85,7 @@ def replay(trace: Trace) -> Iterator[str]:
             pending.pop(0)
         yield _sse("level", resolve_level(levels[index], runner))
         if trace.narration:
-            yield _narration(index, text_at(trace.narration, index))
+            yield _narration(index, text_at(trace.narration, index), digest_at(trace.digests, index))
     for step in pending:
         if step.kind != StepKind.LEVEL and step.text:
             yield _sse("note", {"text": step.text})
@@ -92,7 +108,8 @@ def run_live(question: str, agent: Agent, narrator: NarratorFactory | None = Non
             if writer is None:
                 continue
             try:
-                events.put(("narration", (level.index, list(writer.narrate(level)))))
+                segments = list(writer.narrate(level))
+                events.put(("narration", (level.index, segments, list(writer.digests))))
             except Exception as error:  # a level without text still shows its panels
                 events.put(("note", {"text": f"No text for level {level.index + 1}: {error}"}))
 
@@ -125,7 +142,7 @@ def create_app(
     agent: Agent | None = None,
     narrator: NarratorFactory | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="slayer-zoom")
+    app = FastAPI(title="galaxy-brain")
     stored = traces if traces is not None else load_traces()
     live_agent = agent or _default_agent()
     live_writer = narrator or (live_narrator if live_agent is not None and agent is None else None)

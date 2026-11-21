@@ -1548,46 +1548,84 @@
   },
   "narration": [
     {
-      "id": "ytd_revenue",
+      "id": "total_revenue",
       "level": 0,
       "text": "Gross revenue year to date is $2.03M.",
       "panel": "total"
     },
     {
-      "id": "monthly_note",
+      "id": "monthly_text",
       "level": 3,
-      "text": "Month by month, revenue ran between $154.5K and $208.4K until August peaked at $240.1K, and November is only a partial month at $143.6K.",
+      "text": "Monthly revenue held between $154.5K and $196.1K until August, which peaked at $240.1K, and November is only a partial month at $143.6K.",
       "panel": "monthly"
+    },
+    {
+      "id": "change_text",
+      "level": 4,
+      "text": "Against the same month last year, complete months are up between 100.6% in June and 537.5% in January, though that growth includes the new stores, and month on month the largest rise was 22.4% in August followed by a 17.9% fall in September.",
+      "panel": "monthly_change"
     },
     {
       "id": "store_split",
       "level": 1,
-      "text": "Brooklyn leads with $1.07M, followed by Philadelphia at $692.8K, while Chicago ($146.0K) and San Francisco ($115.2K) only opened in July.",
+      "text": "Brooklyn leads with $1.07M and Philadelphia follows with $692.8K.",
       "panel": "by_store"
     },
     {
-      "id": "store_mix_note",
-      "level": 2,
-      "text": "Beverages dominate every store's mix, with Brooklyn selling 112,763 beverage units against 33,409 jaffles.",
-      "panel": "store_mix"
+      "id": "new_stores",
+      "level": 1,
+      "text": "Chicago ($146.0K) and San Francisco ($115.2K) only opened in July.",
+      "panel": null
     },
     {
-      "id": "drivers_note",
+      "id": "drivers_text",
       "level": 3,
-      "text": "Brooklyn holds 53.0% of revenue and Philadelphia 34.2%, and average order values are close across stores, from $10.50 in Chicago to $11.02 in Philadelphia, so order volume (98,951 orders in Brooklyn) drives the gap.",
+      "text": "Brooklyn's 53.0% share comes from volume, with 98,951 orders from 701 customers, while average order values stay close across stores, from $10.50 in Chicago to $11.02 in Philadelphia.",
       "panel": "store_drivers"
     },
     {
-      "id": "yoy_note",
-      "level": 4,
-      "text": "Every complete month is well above the same month last year, from 537.5% in January to 106.4% in October, though that includes the new stores; against the month before, August rose 22.4% and September fell 17.9%.",
-      "panel": "monthly_change"
+      "id": "mix_text",
+      "level": 2,
+      "text": "Beverages outsell jaffles in every store, with Brooklyn selling 112,763 beverage units against 33,409 jaffles.",
+      "panel": "store_mix"
     },
     {
-      "id": "top_prod_note",
+      "id": "top_prod_text",
       "level": 2,
-      "text": "No single product stands out, as the top five each sold between 42,312 and 42,578 units, led by for richer or pourover at 42,578.",
+      "text": "The top five products are almost level, led by for richer or pourover at 42,578 units and chai and mighty at 42,451.",
       "panel": "top_products"
+    }
+  ],
+  "digests": [
+    {
+      "level": 0,
+      "question": "What is our revenue year to date?",
+      "headline": "$2.03M gross revenue",
+      "summary": "Gross revenue year to date stands at $2.03M."
+    },
+    {
+      "level": 1,
+      "question": "Which cafés bring in the revenue?",
+      "headline": "Brooklyn leads, $1.07M",
+      "summary": "Gross revenue year to date is $2.03M, led by Brooklyn at $1.07M and Philadelphia at $692.8K. Chicago and San Francisco opened in July and contribute smaller amounts so far."
+    },
+    {
+      "level": 2,
+      "question": "What do stores sell?",
+      "headline": "Beverages dominate units",
+      "summary": "Gross revenue year to date is $2.03M, led by Brooklyn at $1.07M and Philadelphia at $692.8K, with Chicago and San Francisco opening in July. Beverages outsell jaffles in every store, and the top five products sell nearly equal units."
+    },
+    {
+      "level": 3,
+      "question": "What is driving the revenue trend?",
+      "headline": "volume, not price",
+      "summary": "Gross revenue year to date is $2.03M, built up steadily month by month with an August peak of $240.1K. Brooklyn leads at $1.07M on order volume rather than price, since average orders sit around $10.50 to $11.02 in every store."
+    },
+    {
+      "level": 4,
+      "question": "How does it compare with last year?",
+      "headline": "Up sharply on last year",
+      "summary": "Gross revenue year to date is $2.03M, with an August peak of $240.1K, and every complete month is well above the same month last year, though that includes new stores. Brooklyn leads at $1.07M on order volume rather than price, since average orders sit around $10.50 to $11.02 in every store."
     }
   ]
 }

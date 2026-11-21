@@ -2,7 +2,8 @@
 
 ## Purpose and context
 
-Persists ladders together with the query results they were answered with, and replays them. Holds the
+Persists ladders together with the query results they were answered with, and replays them. A trace also stores
+the narration and the per-level digests (question, headline, summary). Holds the
 hand-written ladder for "What is our revenue year to date?" until the agent (#2) writes ladders.
 
 ## Building blocks

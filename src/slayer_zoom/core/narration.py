@@ -20,6 +20,20 @@ class Segment(BaseModel):
     """Id of the panel shown right after this segment, if it introduces one."""
 
 
+class Digest(BaseModel):
+    """What a depth adds, at a glance: the question it answers, its finding in a few words, and a summary of
+    the whole answer so far. The summary is the one part of the text that is rewritten at each depth."""
+
+    level: int = Field(ge=0)
+    question: str
+    headline: str
+    summary: str
+
+
+def digest_at(digests: list[Digest], level: int) -> list[Digest]:
+    return [d for d in digests if d.level <= level]
+
+
 class Insertion(BaseModel):
     """A new segment and where it goes: after the segment with id `after`, or at the start when it is None."""
 

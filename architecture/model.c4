@@ -83,9 +83,10 @@ model {
         package 'src/panels'
       }
     }
-    slider = node 'Granularity slider' {
+    slider = node 'Resizable answer' {
       metadata {
         package 'src/slider'
+        specs ['resizable-answer']
       }
     }
 

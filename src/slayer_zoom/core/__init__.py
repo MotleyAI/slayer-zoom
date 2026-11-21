@@ -16,8 +16,10 @@ from slayer_zoom.core.models import (
     ValueFormat,
 )
 from slayer_zoom.core.narration import (
+    Digest,
     Insertion,
     Segment,
+    digest_at,
     expansion_violations,
     insert_segments,
     text_at,
@@ -39,7 +41,9 @@ __all__ = [
     "QueryRunner",
     "ResolvedLevel",
     "ResolvedPanel",
+    "Digest",
     "Segment",
+    "digest_at",
     "SlayerQuery",
     "StepKind",
     "ValueFormat",

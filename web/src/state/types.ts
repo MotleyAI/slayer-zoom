@@ -39,3 +39,11 @@ export interface Segment {
   /** The panel shown right after this segment, if it introduces one. */
   panel: string | null;
 }
+
+/** A depth at a glance: the question it answers, its finding in a few words, and the summary of the answer so far. */
+export interface Digest {
+  level: number;
+  question: string;
+  headline: string;
+  summary: string;
+}

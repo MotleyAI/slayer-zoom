@@ -8,6 +8,7 @@ import anthropic
 from pydantic import BaseModel, Field
 
 from slayer_zoom.core import (
+    Digest,
     Insertion,
     ResolvedLevel,
     ResolvedPanel,
@@ -22,6 +23,13 @@ MAX_TOKENS = 4000
 EFFORT = "low"
 ROWS_SHOWN = 30
 _ID = re.compile(r"[a-z0-9_]+")
+_TAG = re.compile(r"<[^>]{0,40}>")
+_EMPHASIS = re.compile(r"[*_`#]{1,3}(?=\S)|(?<=\S)[*_`]{1,3}")
+
+
+def plain(text: str) -> str:
+    """The text as the reader should see it: no HTML tags or markdown emphasis, single spaces."""
+    return " ".join(_EMPHASIS.sub("", _TAG.sub(" ", text)).split())
 
 
 class DraftInsertion(BaseModel):
@@ -33,6 +41,9 @@ class DraftInsertion(BaseModel):
 
 class Draft(BaseModel):
     insertions: list[DraftInsertion] = Field(default_factory=list)
+    question: str = ""
+    headline: str = ""
+    summary: str = ""
 
 
 class _Response(Protocol):
@@ -79,42 +90,78 @@ class Narrator:
     def __init__(self, question: str, client: ClientLike | anthropic.Anthropic) -> None:
         self.question = question
         self.segments: list[Segment] = []
+        self.digests: list[Digest] = []
+        self._seen_rows: list[dict] = []
         self._client = client
 
     def narrate(self, level: ResolvedLevel) -> list[Segment]:
-        """Extends the text with this level's insertions and returns the whole text."""
+        """Extends the text with this level's insertions and its digest, and returns the whole text."""
         introduced = {s.panel for s in self.segments if s.panel}
         new_panels = [p for p in level.panels if p.id not in introduced]
         rows = [row for panel in level.panels for row in panel.data.rows]
-        insertions = self._draft(level, new_panels, rows)
+        self._seen_rows.extend(rows)
+        insertions, digest = self._draft(level, new_panels, rows)
         self.segments = self._apply(level.index, insertions, new_panels)
+        self.digests = [*self.digests, digest]
         return self.segments
 
     def _draft(
         self, level: ResolvedLevel, new_panels: list[ResolvedPanel], rows: list[dict]
-    ) -> list[Insertion]:
+    ) -> tuple[list[Insertion], Digest]:
         feedback = ""
         insertions: list[Insertion] = []
+        draft = Draft()
         for _ in range(2):
-            insertions = self._ask(level, new_panels, feedback)
-            problems = self._problems(insertions, new_panels, rows)
+            draft, insertions = self._ask(level, new_panels, feedback)
+            problems = self._problems(insertions, new_panels, rows) + self._digest_problems(draft)
             if not problems:
-                return insertions
+                return insertions, self._digest(level, draft)
             feedback = "Your previous answer had these problems; fix them:\n- " + "\n- ".join(problems)
         new_ids = {p.id for p in new_panels}
-        return [
+        kept = [
             i
             for i in insertions
             if not ungrounded_numbers(i.segment.text, rows) and i.segment.panel in new_ids | {None}
         ]
+        return kept, self._digest(level, draft)
 
-    def _ask(self, level: ResolvedLevel, new_panels: list[ResolvedPanel], feedback: str) -> list[Insertion]:
+    def _digest_problems(self, draft: Draft) -> list[str]:
+        """The digest may cite any depth so far: its figures must appear in the rows seen up to this one."""
+        problems: list[str] = []
+        for field in ("question", "headline", "summary"):
+            value = getattr(draft, field).strip()
+            if not value:
+                problems.append(f"{field} is missing")
+            elif bad := ungrounded_numbers(value, self._seen_rows):
+                problems.append(f"{field}: figures not in the rows: {', '.join(bad)}")
+        return problems
+
+    def _digest(self, level: ResolvedLevel, draft: Draft) -> Digest:
+        """The draft's digest, with any missing or still ungrounded part replaced by a safe fallback."""
+
+        def grounded(value: str) -> str:
+            value = plain(value)
+            return value if value and not ungrounded_numbers(value, self._seen_rows) else ""
+
+        previous = self.digests[-1].summary if self.digests else ""
+        return Digest(
+            level=level.index,
+            question=grounded(draft.question) or level.title,
+            headline=grounded(draft.headline) or level.title,
+            summary=grounded(draft.summary) or previous,
+        )
+
+    def _ask(
+        self, level: ResolvedLevel, new_panels: list[ResolvedPanel], feedback: str
+    ) -> tuple[Draft, list[Insertion]]:
         brief = {
             "question": self.question,
             "level": level.index + 1,
             "level_title": level.title,
             "level_rationale": level.rationale,
             "text_so_far": [{"id": s.id, "text": s.text, "panel": s.panel} for s in self.segments],
+            "previous_summary": self.digests[-1].summary if self.digests else None,
+            "earlier_headlines": [d.headline for d in self.digests],
             "new_panels": [_panel_brief(p) for p in new_panels],
             "earlier_panels": [_panel_brief(p) for p in level.panels if p not in new_panels],
         }
@@ -137,9 +184,9 @@ class Narrator:
         for item in draft.insertions if draft else []:
             sid = item.id if _ID.fullmatch(item.id) and item.id not in used else f"l{level.index}_{len(used)}"
             used.add(sid)
-            segment = Segment(id=sid, level=level.index, text=item.text.strip(), panel=item.panel)
+            segment = Segment(id=sid, level=level.index, text=plain(item.text), panel=item.panel)
             insertions.append(Insertion(segment=segment, after=item.after))
-        return insertions
+        return draft or Draft(), insertions
 
     def _problems(
         self, insertions: list[Insertion], new_panels: list[ResolvedPanel], rows: list[dict]

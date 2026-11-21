@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { takeEvents } from "./sse";
-import type { ResolvedLevel, Segment } from "./types";
+import type { Digest, ResolvedLevel, Segment } from "./types";
 
 export type Status = "idle" | "loading" | "streaming" | "done" | "error";
 
@@ -15,6 +15,8 @@ export interface AnswerState {
   levels: ResolvedLevel[];
   /** The answer's text so far, in reading order. */
   narration: Segment[];
+  /** One digest per narrated level, in level order. */
+  digests: Digest[];
   /** The last level whose text has arrived, or -1 when the answer has no text. */
   narratedThrough: number;
   /** Continuous slider position: 2.4 shows level 2 in full and 40% of level 3's added text. */
@@ -39,6 +41,7 @@ const INITIAL: AnswerState = {
   summary: "",
   levels: [],
   narration: [],
+  digests: [],
   narratedThrough: -1,
   position: 0,
   error: null,
@@ -60,8 +63,8 @@ export function createAnswerStore(fetchImpl: typeof fetch = (...args) => fetch(.
     } else if (event === "level") {
       set({ levels: [...state.levels, data as ResolvedLevel] });
     } else if (event === "narration") {
-      const { level, segments } = data as { level: number; segments: Segment[] };
-      set({ narration: segments, narratedThrough: Math.max(state.narratedThrough, level) });
+      const { level, segments, digests = [] } = data as { level: number; segments: Segment[]; digests?: Digest[] };
+      set({ narration: segments, digests, narratedThrough: Math.max(state.narratedThrough, level) });
     } else if (event === "done") {
       set({ status: "done", summary: (data as { summary?: string }).summary ?? "" });
     } else if (event === "error") {
